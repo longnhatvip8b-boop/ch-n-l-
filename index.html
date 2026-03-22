@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Game Chẵn Lẻ V9 - Online Edition</title>
+    <title>Game Chẵn Lẻ V13 - UI Optimized</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -11,74 +11,71 @@
     <style>
         :root { --primary: #f1c40f; --success: #2ecc71; --danger: #e74c3c; --bg-dark: #121212; --blue: #3498db; --purple: #9b59b6; }
         body { font-family: -apple-system, sans-serif; background: var(--bg-dark); color: white; text-align: center; margin: 0; padding: 10px; }
-        .container { max-width: 420px; margin: auto; background: #222; padding: 15px; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); border: 1px solid #333; }
-        
+        .container { max-width: 420px; margin: auto; background: #222; padding: 15px; border-radius: 25px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         input { width: 100%; padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #444; background: #333; color: white; box-sizing: border-box; }
         button { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button:active { transform: scale(0.98); }
         .hidden { display: none !important; }
-
+        
+        /* Balance */
         .balance-card { background: linear-gradient(135deg, #333, #222); padding: 12px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--primary); }
         .balance-amount { font-size: 24px; color: var(--primary); font-weight: bold; }
         
-        /* Chat System */
-        #chat-box { background: #1a1a1a; border-radius: 12px; border: 1px solid #333; margin-top: 15px; text-align: left; display: flex; flex-direction: column; height: 150px; }
-        #chat-content { flex-grow: 1; overflow-y: auto; padding: 10px; font-size: 13px; color: #ccc; scroll-behavior: smooth; }
-        .chat-msg { margin-bottom: 5px; border-bottom: 1px solid #222; padding-bottom: 3px; }
-        .chat-input-area { display: flex; padding: 5px; border-top: 1px solid #333; }
-        .chat-input-area input { flex-grow: 1; margin: 0; border-radius: 5px 0 0 5px; }
-
-        /* Dice & Buttons */
-        .dice-container { display: flex; justify-content: center; gap: 10px; margin: 10px 0; }
+        /* Dice */
+        .dice-container { display: flex; justify-content: center; gap: 10px; margin: 15px 0; }
         .dice { width: 45px; height: 45px; background: white; color: black; border-radius: 8px; line-height: 45px; font-size: 22px; font-weight: bold; }
-        .btn-group { display: flex; gap: 8px; }
-        .btn-group button { flex: 1; font-size: 16px; color: white; }
-        .quick-bet { display: flex; gap: 3px; margin-bottom: 8px; }
-        .quick-bet button { flex: 1; padding: 6px; font-size: 10px; background: #2a2a2a; color: white; border: 1px solid #444; }
-
-        #timer-box { font-size: 30px; color: var(--primary); font-weight: bold; }
-        #status { font-size: 13px; margin: 8px 0; min-height: 20px; color: #f1c40f; }
         
-        .bet-info-container { display: flex; gap: 10px; margin-top: 5px; margin-bottom: 10px; }
-        .bet-pool { flex: 1; background: #1a1a1a; padding: 5px; border-radius: 8px; border: 1px solid #333; }
-        .pool-label { font-size: 10px; color: #888; text-transform: uppercase;}
-        .pool-amount { font-size: 14px; color: var(--primary); font-weight: bold; }
+        /* Betting Buttons & Pools Below */
+        .btn-group { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-group button { flex: 1; font-size: 20px; color: white; height: 60px; }
+        
+        .bet-info-container { display: flex; gap: 8px; margin-top: 5px; margin-bottom: 15px; }
+        .bet-pool { flex: 1; background: #1a1a1a; padding: 5px; border-radius: 0 0 10px 10px; border: 1px solid #333; border-top: none; }
+        .pool-label { font-size: 10px; color: #777; }
+        .pool-amount { font-size: 13px; color: var(--primary); font-weight: bold; }
+
+        /* Chat */
+        #chat-box { background: #1a1a1a; border-radius: 12px; border: 1px solid #333; margin-top: 15px; text-align: left; display: flex; flex-direction: column; height: 130px; }
+        #chat-content { flex-grow: 1; overflow-y: auto; padding: 10px; font-size: 12px; color: #ccc; }
+        .chat-input-area { display: flex; padding: 5px; border-top: 1px solid #333; }
+        .chat-input-area input { flex-grow: 1; margin: 0; border-radius: 5px 0 0 5px; height: 35px; }
+
+        /* Utils */
+        .quick-bet { display: flex; gap: 3px; margin-bottom: 5px; }
+        .quick-bet button { flex: 1; padding: 6px; font-size: 10px; background: #2a2a2a; color: white; }
+        #timer-box { font-size: 32px; color: var(--primary); font-weight: bold; }
+        #status { font-size: 14px; margin: 5px 0; min-height: 20px; color: #f1c40f; }
+        .bottom-nav { display: flex; gap: 5px; margin-top: 10px; }
+        .bottom-nav button { font-size: 11px; padding: 8px; flex: 1; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="screen-auth">
-        <h3 id="auth-title">ĐĂNG KÝ THÀNH VIÊN</h3>
+        <h3 id="auth-title">ĐĂNG NHẬP / ĐĂNG KÝ</h3>
         <form id="auth-form">
             <input type="text" id="username" placeholder="Tên đăng nhập" required>
             <input type="password" id="password" placeholder="Mật khẩu" required>
             <button type="submit" style="background: var(--success); color: white;">VÀO GAME</button>
         </form>
-        <p onclick="toggleAuth()" style="color: #888; cursor: pointer; margin-top: 10px; font-size: 12px;">Đã có tài khoản? Đăng nhập</p>
+        <p onclick="toggleAuth()" id="toggle-text" style="color: #888; cursor: pointer; margin-top: 10px; font-size: 12px;">Đã có tài khoản? Đăng nhập</p>
     </div>
 
     <div id="screen-lobby" class="hidden">
         <h3>SẢNH CHỜ</h3>
         <p>Chào, <b id="lobby-name" style="color:var(--primary)"></b></p>
-        
-        <div class="balance-card" style="border-color: var(--blue);">
+        <div class="balance-card">
             <div style="font-size: 12px;">Ví của bạn</div>
             <div class="balance-amount">$<span id="lobby-balance">0</span></div>
         </div>
-
-        <button onclick="dailyCheckin()" style="background: var(--purple); color:white; margin-bottom: 15px;">🎁 ĐIỂM DANH (1 LẦN/NGÀY)</button>
-        
-        <button onclick="goToGame('single')" style="padding:15px; margin:5px 0; background:#333; color:white; border:1px solid #444;">🕹️ CHƠI ĐƠN</button>
-        <button onclick="goToGame('multi')" style="padding:15px; margin:5px 0; background:#333; color:white; border:1px solid var(--blue);">🌍 PHÒNG CHUNG (CÂN CỬA)</button>
-        
-        <button onclick="logout()" style="background:none; color:#555; text-decoration:underline; font-size:11px; margin-top: 20px;">Đăng xuất</button>
+        <button onclick="dailyCheckin()" style="background: var(--purple); color:white;">🎁 ĐIỂM DANH ($5,000)</button>
+        <button onclick="goToGame()" style="padding:15px; background:var(--blue); color:white; font-size:18px;">🌍 VÀO PHÒNG CHUNG</button>
+        <button onclick="logout()" style="background:none; color:#555; text-decoration:underline; font-size:11px;">Đăng xuất</button>
     </div>
 
     <div id="screen-game" class="hidden">
         <div class="balance-card">
             <div>Số dư: <span class="balance-amount">$<span id="balance">0</span></span></div>
-            <div id="mode-tag" style="font-size: 10px; color: #666;">PHÒNG CHUNG</div>
         </div>
 
         <div id="timer-box">15s</div>
@@ -88,50 +85,48 @@
             <div id="d3" class="dice">?</div>
         </div>
 
-        <input type="number" id="bet-amount" style="text-align:center; font-size:18px;" placeholder="Tiền cược...">
+        <input type="number" id="bet-amount" style="text-align:center; font-size:20px;" placeholder="Tiền cược...">
         <div class="quick-bet">
-            <button onclick="addBet(100)">+100</button>
             <button onclick="addBet(1000)">+1K</button>
             <button onclick="addBet(10000)">+10K</button>
+            <button onclick="addBet(50000)">+50K</button>
             <button onclick="addBet(0)" style="color:var(--danger)">Xóa</button>
         </div>
 
         <div class="btn-group">
-            <button id="btn-chan" onclick="bet('Chẵn')" style="background: var(--blue);">CHẴN</button>
-            <button id="btn-le" onclick="bet('Lẻ')" style="background: var(--danger);">LẺ</button>
+            <button onclick="bet('Chẵn')" style="background: var(--blue); border-radius: 8px 8px 0 0;">CHẴN</button>
+            <button onclick="bet('Lẻ')" style="background: var(--danger); border-radius: 8px 8px 0 0;">LẺ</button>
         </div>
-
-        <div class="bet-info-container" id="pool-display">
+        <div class="bet-info-container">
             <div class="bet-pool">
-                <div class="pool-label">Tổng Chẵn</div>
+                <div class="pool-label">TỔNG CHẴN</div>
                 <div class="pool-amount">$<span id="pool-chan">0</span></div>
             </div>
             <div class="bet-pool">
-                <div class="pool-label">Tổng Lẻ</div>
+                <div class="pool-label">TỔNG LẺ</div>
                 <div class="pool-amount">$<span id="pool-le">0</span></div>
             </div>
         </div>
 
-        <div id="status">Vui lòng đặt cược...</div>
+        <div id="status">Sẵn sàng đặt cược...</div>
 
         <div id="chat-box">
             <div id="chat-content"></div>
             <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Nhắn tin online...">
-                <button onclick="sendMessage()" style="width:50px; margin:0; font-size:10px; background:var(--blue); color:white;">GỬI</button>
+                <input type="text" id="chat-input" placeholder="Chat...">
+                <button onclick="sendMessage()" style="width:60px; margin:0; background:var(--blue); color:white;">GỬI</button>
             </div>
         </div>
 
-        <div style="display:flex; gap:5px; margin-top:10px;">
-            <button onclick="showGift()" style="font-size:10px; background:var(--purple); color:white;">CODE</button>
-            <button onclick="showBank()" style="font-size:10px; background:var(--success); color:white;">BANK</button>
-            <button onclick="backToLobby()" style="font-size:10px; background:#444; color:white;">THOÁT</button>
+        <div class="bottom-nav">
+            <button onclick="showGift()" style="background:var(--purple); color:white;">CODE</button>
+            <button onclick="showBank()" style="background:var(--success); color:white;">BANK</button>
+            <button onclick="backToLobby()" style="background:#444; color:white;">THOÁT</button>
         </div>
     </div>
 </div>
 
 <script>
-    // --- 1. CẤU HÌNH FIREBASE ---
     const firebaseConfig = {
         apiKey: "AIzaSyDDPxl6wvCSelFn35URRMz7De4lBKU0zy4",
         authDomain: "game-chan-le.firebaseapp.com",
@@ -139,312 +134,159 @@
         projectId: "game-chan-le",
         storageBucket: "game-chan-le.firebasestorage.app",
         messagingSenderId: "1096509265168",
-        appId: "1:1096509265168:web:a93327d20e033674d98195",
-        measurementId: "G-GCE33P6H2C"
+        appId: "1:1096509265168:web:a93327d20e033674d98195"
     };
-
-    // Khởi tạo Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // --- BIẾN TOÀN CỤC ---
-    let isLogin = false, user = null, currentMode = 'multi', myBetSide = null, myBetVal = 0, lock = false;
+    let user = null, myBetSide = null, myBetVal = 0, lock = false, isLoginMode = true;
     let poolChan = 0, poolLe = 0;
 
-    // --- HÀM TƯƠNG TÁC DB FIREBASE ---
-    // Lấy dữ liệu người dùng (Bất đồng bộ)
-    async function getUser(u) {
-        const snapshot = await db.ref('users/' + u).once('value');
-        return snapshot.val();
-    }
-    
-    // Lưu dữ liệu người dùng
-    async function saveUser(u, data) {
-        await db.ref('users/' + u).set(data);
-    }
+    async function getUser(u) { return (await db.ref('users/' + u).once('value')).val(); }
+    async function saveUser(u, data) { await db.ref('users/' + u).set(data); }
 
-    // --- AUTH & LOBBY ---
-    function toggleAuth() { 
-        isLogin = !isLogin; 
-        document.getElementById('auth-title').innerText = isLogin ? "ĐĂNG NHẬP" : "ĐĂNG KÝ"; 
+    function toggleAuth() {
+        isLoginMode = !isLoginMode;
+        document.getElementById('auth-title').innerText = isLoginMode ? "ĐĂNG NHẬP" : "ĐĂNG KÝ";
+        document.getElementById('toggle-text').innerText = isLoginMode ? "Chưa có tài khoản? Đăng ký" : "Đã có tài khoản? Đăng nhập";
     }
 
     document.getElementById('auth-form').onsubmit = async (e) => {
         e.preventDefault();
-        const u = document.getElementById('username').value.trim();
-        const p = document.getElementById('password').value.trim();
-        
-        // Tài khoản Admin đặc biệt
-        if (u === "lnhatvip" && p === "ngocdiep") {
-            await saveUser(u, {password: p, balance: 999999999, usedCodes: [], lastCheckin: ""}); 
-            return startLobby(u);
-        }
-
+        const u = document.getElementById('username').value.trim().toLowerCase();
+        const p = document.getElementById('password').value;
         let data = await getUser(u);
-        
-        if (isLogin) { 
-            // Đăng nhập
-            if (data && data.password === p) {
-                startLobby(u); 
-            } else {
-                alert("Tài khoản hoặc mật khẩu không chính xác!"); 
-            }
-        } else { 
-            // Đăng ký
-            if (data) {
-                alert("Tên đăng nhập đã có người sử dụng!"); 
-            } else { 
-                await saveUser(u, { password: p, balance: 5000, usedCodes: [], lastCheckin: "" }); 
-                startLobby(u); 
-            } 
+        if (isLoginMode) {
+            if (data && data.password === p) startLobby(u); else alert("Sai thông tin!");
+        } else {
+            if (data) alert("Tên đã tồn tại!");
+            else { await saveUser(u, { password: p, balance: 5000, lastCheckin: "", usedCodes: [] }); startLobby(u); }
         }
     };
 
-    function startLobby(uName) { 
-        user = uName; 
-        localStorage.setItem('session', uName); 
-        showScreen('screen-lobby'); 
-        document.getElementById('lobby-name').innerText = uName; 
-        
-        // Lắng nghe số dư thay đổi trực tiếp từ Firebase (Realtime cập nhật số tiền)
-        db.ref('users/' + user).on('value', (snapshot) => {
-            const data = snapshot.val();
-            if(data) {
-                document.getElementById('balance').innerText = data.balance.toLocaleString();
-                document.getElementById('lobby-balance').innerText = data.balance.toLocaleString();
+    function startLobby(uName) {
+        user = uName;
+        localStorage.setItem('session', uName);
+        showScreen('screen-lobby');
+        document.getElementById('lobby-name').innerText = uName;
+        db.ref('users/' + user).on('value', snap => {
+            const d = snap.val();
+            if(d) {
+                document.getElementById('balance').innerText = d.balance.toLocaleString();
+                document.getElementById('lobby-balance').innerText = d.balance.toLocaleString();
             }
         });
-
-        initChatListener(); // Bật chat online
+        initChat(); startBot();
     }
 
-    function goToGame(mode) { 
-        currentMode = mode; 
-        showScreen('screen-game'); 
-        document.getElementById('pool-display').classList.toggle('hidden', mode === 'single');
-        document.getElementById('mode-tag').innerText = mode === 'multi' ? "PHÒNG CHUNG" : "CHƠI ĐƠN";
-        if (mode === 'multi') startClock(); 
+    function initChat() {
+        db.ref('chats').limitToLast(15).on('value', snap => {
+            let h = ''; snap.forEach(c => { const v = c.val(); h += `<div><b>${v.u}:</b> ${v.m}</div>`; });
+            const div = document.getElementById('chat-content'); div.innerHTML = h; div.scrollTop = div.scrollHeight;
+        });
     }
 
-    // --- FIREBASE CHAT ONLINE ---
     function sendMessage() {
-        const msgInput = document.getElementById('chat-input');
-        const msg = msgInput.value.trim();
-        if(!msg) return;
-        
-        // Đẩy tin nhắn lên Firebase
-        db.ref('chats').push({
-            u: user,
-            m: msg,
-            t: firebase.database.ServerValue.TIMESTAMP
-        });
-        msgInput.value = "";
+        const i = document.getElementById('chat-input'); if(!i.value.trim()) return;
+        db.ref('chats').push({ u: user, m: i.value, t: firebase.database.ServerValue.TIMESTAMP }); i.value = '';
     }
 
-    // Lắng nghe tin nhắn mới từ mọi người
-    let isChatInit = false;
-    function initChatListener() {
-        if(isChatInit) return;
-        isChatInit = true;
-        
-        // Lấy 30 tin nhắn mới nhất
-        db.ref('chats').orderByChild('t').limitToLast(30).on('value', (snapshot) => {
-            const content = document.getElementById('chat-content');
-            let html = '';
-            snapshot.forEach(child => {
-                const c = child.val();
-                html += `<div class="chat-msg"><b style="color:${c.u === 'lnhatvip' ? 'var(--danger)' : 'var(--blue)'}">${c.u}:</b> ${c.m}</div>`;
-            });
-            content.innerHTML = html;
-            content.scrollTop = content.scrollHeight;
-        });
+    function startBot() {
+        setInterval(() => {
+            if (lock) return;
+            poolChan += Math.floor(Math.random() * 2000) + 100;
+            poolLe += Math.floor(Math.random() * 2000) + 100;
+            updatePoolUI();
+        }, 1500);
     }
 
-    // --- TIỀN CƯỢC ẢO ---
-    function updatePools() {
-        if (currentMode !== 'multi' || lock) return;
-        poolChan += Math.floor(Math.random() * 500);
-        poolLe += Math.floor(Math.random() * 500);
+    function updatePoolUI() {
         document.getElementById('pool-chan').innerText = poolChan.toLocaleString();
         document.getElementById('pool-le').innerText = poolLe.toLocaleString();
     }
-    setInterval(updatePools, 1500);
 
-    // --- ĐỒNG HỒ & THUẬT TOÁN ---
     function startClock() {
-        if(window.gameClock) return;
-        window.gameClock = setInterval(() => {
+        if(window.timerSet) return; window.timerSet = true;
+        setInterval(() => {
             const sec = new Date().getSeconds() % 20;
-            if (currentMode !== 'multi') return;
             if (sec < 15) {
-                lock = false; 
-                document.getElementById('timer-box').innerText = (15-sec)+"s";
+                lock = false; document.getElementById('timer-box').innerText = (15 - sec) + "s";
                 document.getElementById('timer-box').style.color = "var(--primary)";
             } else {
-                if (!lock) { processResult(); lock = true; }
+                if (!lock) { lock = true; processResult(); }
                 document.getElementById('timer-box').innerText = "LẮC!";
                 document.getElementById('timer-box').style.color = "var(--danger)";
             }
         }, 1000);
     }
 
+    async function bet(side) {
+        if (lock) return;
+        const amt = parseInt(document.getElementById('bet-amount').value);
+        if (isNaN(amt) || amt < 100) return alert("Cược ít nhất $100");
+        let d = await getUser(user);
+        if (d.balance < amt) return alert("Không đủ tiền!");
+        myBetSide = side; myBetVal = amt;
+        if (side === 'Chẵn') poolChan += amt; else poolLe += amt;
+        updatePoolUI();
+        document.getElementById('status').innerText = `Đã cược ${side} $${amt.toLocaleString()}`;
+    }
+
     async function processResult() {
-        let winRate = 50; 
-        if (currentMode === 'multi' && myBetSide) {
+        let winRate = 50;
+        if (myBetSide) {
             const isHeavy = (myBetSide === 'Chẵn' && poolChan > poolLe) || (myBetSide === 'Lẻ' && poolLe > poolChan);
-            winRate = isHeavy ? 20 : 70;
+            winRate = isHeavy ? 30 : 70;
         }
-
-        const isWin = (Math.random() * 100) <= winRate;
-        let d1, d2, d3, total, res, match;
-        do {
-            d1 = Math.floor(Math.random()*6)+1; d2 = Math.floor(Math.random()*6)+1; d3 = Math.floor(Math.random()*6)+1;
-            total = d1+d2+d3; res = (total%2===0)?'Chẵn':'Lẻ';
-            match = myBetSide ? ((isWin && res === myBetSide) || (!isWin && res !== myBetSide)) : true;
-        } while (!match);
-
-        document.getElementById('d1').innerText=d1; document.getElementById('d2').innerText=d2; document.getElementById('d3').innerText=d3;
-        
+        const d1 = Math.floor(Math.random()*6)+1, d2 = Math.floor(Math.random()*6)+1, d3 = Math.floor(Math.random()*6)+1;
+        const res = ((d1+d2+d3) % 2 === 0) ? 'Chẵn' : 'Lẻ';
+        document.getElementById('d1').innerText = d1; document.getElementById('d2').innerText = d2; document.getElementById('d3').innerText = d3;
         if (myBetSide) {
             let data = await getUser(user);
-            if (res === myBetSide) {
-                data.balance += myBetVal;
-                document.getElementById('status').innerHTML = `<b style="color:var(--success)">${res} - THẮNG +$${myBetVal.toLocaleString()}</b>`;
-            } else {
-                if(user !== "lnhatvip") data.balance -= myBetVal;
-                document.getElementById('status').innerHTML = `<b style="color:var(--danger)">${res} - THUA -$${myBetVal.toLocaleString()}</b>`;
-            }
-            await saveUser(user, data); 
+            if (res === myBetSide) data.balance += myBetVal; else data.balance -= myBetVal;
+            await saveUser(user, data);
+            document.getElementById('status').innerHTML = res === myBetSide ? `<b style="color:var(--success)">THẮNG +$${myBetVal.toLocaleString()}</b>` : `<b style="color:var(--danger)">THUA -$${myBetVal.toLocaleString()}</b>`;
         }
-        
-        myBetSide = null; poolChan = 0; poolLe = 0;
-        if(currentMode === 'single') {
-            setTimeout(() => { lock = false; document.getElementById('status').innerText="Mời cược!"; }, 2000);
-        }
+        myBetSide = null;
+        setTimeout(() => { poolChan = 0; poolLe = 0; updatePoolUI(); document.getElementById('status').innerText = "Mời cược!"; }, 3000);
     }
 
-    // --- CÁC CHỨC NĂNG NGƯỜI CHƠI ---
-    function addBet(v) { 
-        if(lock) return;
-        let current = parseInt(document.getElementById('bet-amount').value) || 0;
-        document.getElementById('bet-amount').value = (v === 0) ? "" : current + v; 
-    }
-
-    async function bet(side) {
-        if(lock) return;
-        const v = parseInt(document.getElementById('bet-amount').value);
-        if(isNaN(v) || v < 10) return alert("Cược tối thiểu $10");
-        
-        const data = await getUser(user);
-        if(v > data.balance && user !== "lnhatvip") return alert("Bạn không đủ tiền!");
-        
-        myBetSide = side; myBetVal = v;
-        if (side === 'Chẵn') poolChan += v; else poolLe += v;
-        
-        document.getElementById('status').innerText = `Đã đặt ${side} $${v.toLocaleString()}`;
-        if(currentMode === 'single') { lock = true; setTimeout(processResult, 800); }
-    }
-
-    // Điểm danh (1 lần / ngày)
     async function dailyCheckin() {
-        let data = await getUser(user);
-        const today = new Date().toDateString();
-
-        if (data.lastCheckin === today) {
-            return alert("Hôm nay bạn đã điểm danh rồi! Hãy quay lại vào ngày mai nhé.");
-        }
-
-        data.balance += 5000;
-        data.lastCheckin = today;
-        await saveUser(user, data);
-        alert("Thành công! Bạn nhận được $5,000 quà điểm danh ngày mới.");
+        let d = await getUser(user); const t = new Date().toDateString();
+        if (d.lastCheckin === t) return alert("Đã nhận rồi!");
+        d.balance += 5000; d.lastCheckin = t; await saveUser(user, d); alert("+$5,000!");
     }
 
-    // Nhập Code
     async function showGift() {
-        const codeInput = prompt("Nhập Giftcode:");
-        if(!codeInput) return;
-        
-        const code = codeInput.trim().toUpperCase();
-        let data = await getUser(user);
-        if(!data.usedCodes) data.usedCodes = []; // Fix nếu acc cũ thiếu mảng
-        
-        const codes = { "MOIGAME": 10000, "LNHAT": 15000 };
-
-        if (codes[code]) {
-            if (!data.usedCodes.includes(code)) {
-                data.balance += codes[code];
-                data.usedCodes.push(code);
-                await saveUser(user, data);
-                alert(`Kích hoạt thành công mã ${code}: +$${codes[code].toLocaleString()}`);
-            } else {
-                alert("Mã này bạn đã sử dụng rồi!");
-            }
-        } else {
-            alert("Mã Giftcode không tồn tại!");
-        }
+        const c = prompt("Nhập Code:").toUpperCase(); if(!c) return;
+        let d = await getUser(user); if(!d.usedCodes) d.usedCodes = [];
+        const cs = { "TANTHU": 10000, "LNHAT": 20000 };
+        if (cs[c] && !d.usedCodes.includes(c)) {
+            d.balance += cs[c]; d.usedCodes.push(c); await saveUser(user, d); alert("Thành công!");
+        } else alert("Mã sai!");
     }
 
-    // Chuyển tiền online
     async function showBank() {
-        const receiver = prompt("Nhập tên người nhận:");
-        if (!receiver) return;
-        
-        const amountStr = prompt("Nhập số tiền muốn chuyển:");
-        const amount = parseInt(amountStr);
-        
-        if (isNaN(amount) || amount <= 0) return alert("Số tiền không hợp lệ!");
-        if (receiver === user) return alert("Không thể tự chuyển cho chính mình!");
-
-        // Lấy dữ liệu cả 2 người cùng lúc từ DB
-        let myData = await getUser(user);
-        let toData = await getUser(receiver);
-        
-        if (!toData) return alert(`Người chơi [${receiver}] không tồn tại trên hệ thống!`);
-        if (myData.balance < amount && user !== "lnhatvip") return alert("Số dư của bạn không đủ!");
-        
-        // Trừ tiền người gửi, cộng tiền người nhận
-        myData.balance -= amount;
-        toData.balance += amount;
-        
-        // Lưu lại DB
-        await saveUser(user, myData);
-        await saveUser(receiver, toData);
-        
-        alert(`Đã chuyển thành công $${amount.toLocaleString()} tới ${receiver}!`);
+        const to = prompt("Người nhận:").toLowerCase(); const a = parseInt(prompt("Số tiền:"));
+        if (isNaN(a) || a <= 0 || to === user) return;
+        let mD = await getUser(user), tD = await getUser(to);
+        if (!tD || mD.balance < a) return alert("Lỗi!");
+        mD.balance -= a; tD.balance += a; await saveUser(user, mD); await saveUser(to, tD); alert("Xong!");
     }
 
-    // --- HỆ THỐNG CƠ BẢN ---
-    function showScreen(id) { 
-        ['screen-auth', 'screen-lobby', 'screen-game'].forEach(s => document.getElementById(s).classList.add('hidden')); 
-        document.getElementById(id).classList.remove('hidden'); 
+    function showScreen(id) {
+        ['screen-auth', 'screen-lobby', 'screen-game'].forEach(s => document.getElementById(s).classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
     }
-    
-    function logout() { 
-        localStorage.removeItem('session'); 
-        location.reload(); 
-    }
-    
-    function backToLobby() { 
-        showScreen('screen-lobby'); 
-    }
-    
-    window.onload = async () => { 
-        const s = localStorage.getItem('session'); 
-        if(s) {
-            const data = await getUser(s);
-            if(data) startLobby(s); // Auto login nếu tài khoản còn tồn tại trên DB
-            else localStorage.removeItem('session');
-        }
+    function backToLobby() { showScreen('screen-lobby'); }
+    function goToGame() { showScreen('screen-game'); startClock(); }
+    function logout() { localStorage.removeItem('session'); location.reload(); }
+    function addBet(v) { let c = parseInt(document.getElementById('bet-amount').value) || 0; document.getElementById('bet-amount').value = (v === 0) ? "" : c + v; }
+
+    window.onload = async () => {
+        const s = localStorage.getItem('session');
+        if (s) { const d = await getUser(s); if (d) startLobby(s); }
     };
-
-    // Chat bằng phím Enter
-    document.getElementById("chat-input").addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            sendMessage();
-        }
-    });
 </script>
 </body>
 </html>
