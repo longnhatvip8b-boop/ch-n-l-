@@ -369,9 +369,12 @@
 
 <script>
     /* ================================================================
-       PHẦN 2: CONFIG & FIREBASE (GIỮ NGUYÊN)
+       PHẦN 2: CONFIG & THÊM CÁC BIẾN QUẢN LÝ ADMIN/CHỐNG LẠM PHÁT
        ================================================================
     */
+    const ADMIN_USERNAME = "admin"; // <=== ĐỔI TÊN NÀY THÀNH TÊN NICK TRONG GAME CỦA BẠN ĐỂ DÙNG LỆNH BAN
+    let currentBalance = 0; // Biến này dùng để check chống lạm phát
+
     const firebaseConfig = {
         apiKey: "AIzaSyDDPxl6wvCSelFn35URRMz7De4lBKU0zy4",
         authDomain: "game-chan-le.firebaseapp.com",
@@ -391,13 +394,13 @@
     let is_room_host = false;
 
     /* ================================================================
-       PHẦN 3: LOGIC HỆ THỐNG GỐC (GIỮ NGUYÊN & THÊM HÀM FIX LỖI)
+       PHẦN 3: LOGIC HỆ THỐNG GỐC 
        ================================================================
     */
     async function getUser(u) { return (await db.ref('users/' + u).once('value')).val(); }
     async function saveUser(u, data) { await db.ref('users/' + u).set(data); }
 
-    // --- FIX LỖI 2 NÚT BANK & GIFTCODE TẠI ĐÂY ---
+    // --- NÚT BANK & GIFTCODE ---
     async function showBank() {
         const receiver = prompt("Nhập tên người nhận:");
         if (!receiver) return;
@@ -422,7 +425,6 @@
         const code = prompt("Nhập mã GIFTCODE:");
         if (!code) return;
         
-        // Logic mẫu cho Giftcode
         if (code === "GAME2024") {
             const myData = await getUser(user);
             if (!myData.usedCodes) myData.usedCodes = [];
@@ -436,7 +438,6 @@
             alert("Mã Code không chính xác!");
         }
     }
-    // --- KẾT THÚC PHẦN FIX ---
 
     function showScreen(id) { 
         ['screen-auth', 'screen-lobby', 'screen-game-chanle', 'screen-game-masoi', 'screen-game-masoi-lobby'].forEach(s => {
@@ -453,18 +454,31 @@
 
     document.getElementById('auth-form').onsubmit = async (e) => {
         e.preventDefault();
+
+        // [THÊM MỚI] KIỂM TRA LỆNH CẤM THIẾT BỊ NGAY TẠI TRÌNH DUYỆT
+        if (localStorage.getItem('device_banned') === 'true') {
+            return alert("⛔ Thiết bị này đã bị cấm truy cập vào game vĩnh viễn do vi phạm!");
+        }
+
         const u = document.getElementById('username').value.trim().toLowerCase();
         const p = document.getElementById('password').value;
         if(!u || !p) return;
 
         let data = await getUser(u);
+
+        // [THÊM MỚI] KIỂM TRA XEM TÀI KHOẢN CÓ BỊ ADMIN KHÓA KHÔNG
+        if (data && data.isBanned) {
+            localStorage.setItem('device_banned', 'true'); // Khóa luôn trình duyệt/thiết bị này
+            return alert("⛔ Tài khoản này đã bị Admin khóa vĩnh viễn!");
+        }
+
         if (isLoginMode) { 
             if (data && data.password === p) startLobby(u); 
             else alert("Sai tài khoản hoặc mật khẩu!"); 
         } else { 
             if (data) alert("Tên đăng nhập này đã được sử dụng!"); 
             else { 
-                await saveUser(u, { password: p, balance: 5000, lastCheckin: "", usedCodes: [] }); 
+                await saveUser(u, { password: p, balance: 5000, lastCheckin: "", usedCodes: [], isBanned: false }); 
                 alert("Đăng ký thành công! Bạn nhận được $5,000 khởi nghiệp.");
                 startLobby(u); 
             } 
@@ -480,8 +494,16 @@
         db.ref('users/' + user).on('value', snap => {
             if(snap.val()) {
                 const b = snap.val().balance;
+                currentBalance = b; // [THÊM MỚI] Lưu biến tài sản để dùng cho thuật toán soi tiền
                 document.getElementById('balance-cl').innerText = b.toLocaleString();
                 document.getElementById('lobby-balance').innerText = b.toLocaleString();
+                
+                // [THÊM MỚI] Đá ra nếu bị ban khi đang online
+                if(snap.val().isBanned) {
+                    localStorage.setItem('device_banned', 'true');
+                    alert("Tài khoản của bạn vừa bị Admin khóa. Bắt buộc đăng xuất!");
+                    logout();
+                }
             }
         });
         loadLeaderboard(); 
@@ -492,7 +514,10 @@
     function loadLeaderboard() {
         db.ref('users').orderByChild('balance').limitToLast(5).on('value', snap => {
             let arr = []; 
-            snap.forEach(c => { arr.push({ u: c.key, b: c.val().balance }); }); 
+            snap.forEach(c => { 
+                // Không hiển thị nick bị khóa lên bảng xếp hạng
+                if(!c.val().isBanned) arr.push({ u: c.key, b: c.val().balance }); 
+            }); 
             arr.sort((a,b) => b.b - a.b);
             let html = '';
             arr.forEach((item, index) => {
@@ -522,7 +547,7 @@
     function logout() { localStorage.removeItem('session'); location.reload(); }
 
     /* ================================================================
-       PHẦN 4: LOGIC CHẴN LẺ GỐC (GIỮ NGUYÊN)
+       PHẦN 4: LOGIC CHẴN LẺ GỐC & THÊM THUẬT TOÁN CHỐNG LẠM PHÁT
        ================================================================
     */
     let myBetSide = null, myBetVal = 0, lockCL = true, poolChan = 0, poolLe = 0, canPeek = false, tempResult = null, startY = 0;
@@ -585,8 +610,27 @@
     }
 
     function generateResult() { 
-        const d1 = Math.floor(Math.random()*6)+1, d2 = Math.floor(Math.random()*6)+1, d3 = Math.floor(Math.random()*6)+1;
-        tempResult = { d1, d2, d3, res: (d1+d2+d3)%2===0 ? 'Chẵn' : 'Lẻ' }; 
+        let d1 = Math.floor(Math.random()*6)+1;
+        let d2 = Math.floor(Math.random()*6)+1;
+        let d3 = Math.floor(Math.random()*6)+1;
+        let res = (d1+d2+d3)%2===0 ? 'Chẵn' : 'Lẻ';
+
+        // [THÊM MỚI] THUẬT TOÁN KÉO TIỀN TRÁNH LẠM PHÁT
+        if (myBetSide) {
+            // Nếu nick có hơn 1 triệu đô, 70% sẽ ép thua
+            if (currentBalance > 1000000 && Math.random() < 0.7) {
+                res = (myBetSide === 'Chẵn') ? 'Lẻ' : 'Chẵn';
+                while ((d1+d2+d3)%2===0 !== (res === 'Chẵn')) { d1 = Math.floor(Math.random()*6)+1; }
+            } 
+            // Nếu nick có hơn 500 ngàn đô, 50% sẽ ép thua
+            else if (currentBalance > 500000 && Math.random() < 0.5) {
+                res = (myBetSide === 'Chẵn') ? 'Lẻ' : 'Chẵn';
+                while ((d1+d2+d3)%2===0 !== (res === 'Chẵn')) { d1 = Math.floor(Math.random()*6)+1; }
+            }
+            // Dưới mức đó sẽ ra 50/50 bình thường
+        }
+        
+        tempResult = { d1, d2, d3, res: res }; 
         document.getElementById('d1').innerText = d1; 
         document.getElementById('d2').innerText = d2; 
         document.getElementById('d3').innerText = d3; 
@@ -608,6 +652,8 @@
         const amt = parseInt(document.getElementById('bet-amount').value);
         if (lockCL) return alert("Hết giờ cược!");
         if (isNaN(amt) || amt < 100) return alert("Tối thiểu $100");
+        // [THÊM MỚI] Chống đặt quá số dư
+        if (amt > currentBalance) return alert("Bạn không đủ tiền để cược số tiền này!");
         myBetSide = side; myBetVal = amt;
         document.getElementById('status').innerText = "Đã cược " + side;
     }
@@ -615,8 +661,32 @@
     function startBotCL() { setInterval(() => { if (!lockCL) { poolChan += Math.floor(Math.random()*2000); poolLe += Math.floor(Math.random()*2000); updatePoolUI(); } }, 2000); }
     function updatePoolUI() { document.getElementById('pool-chan').innerText = poolChan.toLocaleString(); document.getElementById('pool-le').innerText = poolLe.toLocaleString(); }
     function addBet(v) { let c = parseInt(document.getElementById('bet-amount').value) || 0; document.getElementById('bet-amount').value = (v === 0) ? "" : c + v; }
+    
     function initChat() { db.ref('chats').limitToLast(15).on('value', snap => { let h = ''; snap.forEach(c => { h += `<div><b>${c.val().u}:</b> ${c.val().m}</div>`; }); const div = document.getElementById('chat-content'); div.innerHTML = h; div.scrollTop = div.scrollHeight; }); }
-    function sendMessage() { const i = document.getElementById('chat-input'); if(i.value.trim()) { db.ref('chats').push({ u: user, m: i.value }); i.value = ''; } }
+    
+    function sendMessage() { 
+        const i = document.getElementById('chat-input'); 
+        let msg = i.value.trim();
+        if(msg) { 
+            
+            // [THÊM MỚI] LỆNH BAN ADMIN
+            if (msg.startsWith('/ban ') && user === ADMIN_USERNAME) {
+                let targetUser = msg.split(' ')[1];
+                if (targetUser) {
+                    targetUser = targetUser.toLowerCase();
+                    // Set trạng thái ban trong firebase
+                    db.ref('users/' + targetUser).update({ isBanned: true });
+                    // Gửi thông báo toàn server
+                    db.ref('chats').push({ u: '🛡️ HỆ THỐNG', m: `Đã cấm vĩnh viễn tài khoản và thiết bị của [${targetUser}].` });
+                }
+                i.value = '';
+                return; // Ngừng chạy để không hiện lệnh /ban ra kênh chat
+            }
+
+            db.ref('chats').push({ u: user, m: msg }); 
+            i.value = ''; 
+        } 
+    }
 
     /* ================================================================
        PHẦN 5: MA SÓI MULTIPLAYER (GIỮ NGUYÊN)
