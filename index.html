@@ -3,130 +3,348 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Game Chẵn Lẻ V13 - UI Optimized</title>
+    <title>Game Center V16.2 - Full Logic</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        :root { --primary: #f1c40f; --success: #2ecc71; --danger: #e74c3c; --bg-dark: #121212; --blue: #3498db; --purple: #9b59b6; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg-dark); color: white; text-align: center; margin: 0; padding: 10px; }
-        .container { max-width: 420px; margin: auto; background: #222; padding: 15px; border-radius: 25px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        input { width: 100%; padding: 10px; margin: 5px 0; border-radius: 8px; border: 1px solid #444; background: #333; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        :root { 
+            --primary: #f1c40f; 
+            --success: #2ecc71; 
+            --danger: #e74c3c; 
+            --bg-dark: #121212; 
+            --blue: #3498db; 
+            --purple: #9b59b6; 
+            --night: #2c3e50; 
+            --day: #f39c12; 
+        }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--bg-dark); 
+            color: white; 
+            text-align: center; 
+            margin: 0; 
+            padding: 10px; 
+            touch-action: pan-y; 
+            -webkit-user-select: none;
+        }
+        .container { 
+            max-width: 420px; 
+            margin: auto; 
+            background: #222; 
+            padding: 15px; 
+            border-radius: 25px; 
+            border: 1px solid #333; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            overflow: hidden; 
+        }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 8px 0; 
+            border-radius: 10px; 
+            border: 1px solid #444; 
+            background: #333; 
+            color: white; 
+            box-sizing: border-box; 
+            font-size: 16px;
+        }
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            margin-top: 8px; 
+            border-radius: 10px; 
+            border: none; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        button:active { transform: scale(0.98); }
         .hidden { display: none !important; }
         
-        /* Balance */
-        .balance-card { background: linear-gradient(135deg, #333, #222); padding: 12px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--primary); }
-        .balance-amount { font-size: 24px; color: var(--primary); font-weight: bold; }
+        /* --- CHẴN LẺ STYLES --- */
+        .balance-card { 
+            background: linear-gradient(135deg, #333, #222); 
+            padding: 15px; 
+            border-radius: 15px; 
+            margin-bottom: 15px; 
+            border: 1px solid var(--primary); 
+        }
+        .balance-amount { font-size: 26px; color: var(--primary); font-weight: bold; }
         
-        /* Dice */
-        .dice-container { display: flex; justify-content: center; gap: 10px; margin: 15px 0; }
-        .dice { width: 45px; height: 45px; background: white; color: black; border-radius: 8px; line-height: 45px; font-size: 22px; font-weight: bold; }
-        
-        /* Betting Buttons & Pools Below */
-        .btn-group { display: flex; gap: 8px; margin-top: 10px; }
-        .btn-group button { flex: 1; font-size: 20px; color: white; height: 60px; }
-        
-        .bet-info-container { display: flex; gap: 8px; margin-top: 5px; margin-bottom: 15px; }
-        .bet-pool { flex: 1; background: #1a1a1a; padding: 5px; border-radius: 0 0 10px 10px; border: 1px solid #333; border-top: none; }
-        .pool-label { font-size: 10px; color: #777; }
-        .pool-amount { font-size: 13px; color: var(--primary); font-weight: bold; }
+        .leaderboard { 
+            background: #1a1a1a; 
+            border-radius: 15px; 
+            border: 1px solid #444; 
+            padding: 12px; 
+            margin-bottom: 15px; 
+            text-align: left; 
+        }
+        .leaderboard h4 { margin: 0 0 10px 0; color: var(--primary); text-align: center; font-size: 14px; letter-spacing: 1px; }
+        .lb-item { display: flex; justify-content: space-between; font-size: 13px; border-bottom: 1px solid #333; padding: 8px 0; }
+        .lb-item:last-child { border-bottom: none; }
 
-        /* Chat */
-        #chat-box { background: #1a1a1a; border-radius: 12px; border: 1px solid #333; margin-top: 15px; text-align: left; display: flex; flex-direction: column; height: 130px; }
-        #chat-content { flex-grow: 1; overflow-y: auto; padding: 10px; font-size: 12px; color: #ccc; }
-        .chat-input-area { display: flex; padding: 5px; border-top: 1px solid #333; }
-        .chat-input-area input { flex-grow: 1; margin: 0; border-radius: 5px 0 0 5px; height: 35px; }
+        .dice-area { 
+            position: relative; 
+            width: 220px; 
+            height: 120px; 
+            margin: 20px auto; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            background: #111;
+            border-radius: 60px;
+            border: 4px solid #333;
+        }
+        .dice-container { display: flex; gap: 12px; z-index: 5; }
+        .dice { 
+            width: 50px; 
+            height: 50px; 
+            background: white; 
+            color: black; 
+            border-radius: 10px; 
+            line-height: 50px; 
+            font-size: 26px; 
+            font-weight: bold; 
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+        }
+        .bowl { 
+            position: absolute; 
+            top: -5px; 
+            left: -5px; 
+            width: 230px; 
+            height: 130px; 
+            background: radial-gradient(circle at 50% 20%, #7f8c8d, #2c3e50); 
+            border-radius: 115px 115px 20px 20px; 
+            z-index: 10; 
+            cursor: grab; 
+            box-shadow: 0 15px 25px rgba(0,0,0,0.8); 
+            transform: translateY(-180px); 
+            opacity: 0; 
+            touch-action: none; 
+            border: 3px solid #555; 
+        }
 
-        /* Utils */
-        .quick-bet { display: flex; gap: 3px; margin-bottom: 5px; }
-        .quick-bet button { flex: 1; padding: 6px; font-size: 10px; background: #2a2a2a; color: white; }
-        #timer-box { font-size: 32px; color: var(--primary); font-weight: bold; }
-        #status { font-size: 14px; margin: 5px 0; min-height: 20px; color: #f1c40f; }
-        .bottom-nav { display: flex; gap: 5px; margin-top: 10px; }
-        .bottom-nav button { font-size: 11px; padding: 8px; flex: 1; }
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-group button { flex: 1; font-size: 22px; color: white; height: 70px; border-bottom: 5px solid rgba(0,0,0,0.3); }
+        
+        .bet-info-container { display: flex; gap: 10px; margin-top: 10px; }
+        .bet-pool { flex: 1; background: #1a1a1a; padding: 8px; border-radius: 12px; border: 1px solid #333; }
+        .pool-label { font-size: 11px; color: #888; margin-bottom: 3px; }
+        .pool-amount { font-size: 15px; color: var(--primary); font-weight: bold; }
+
+        .quick-bet { display: flex; gap: 5px; margin-bottom: 10px; }
+        .quick-bet button { flex: 1; padding: 8px; font-size: 12px; background: #2a2a2a; color: white; border: 1px solid #444; }
+
+        #timer-box { font-size: 40px; color: var(--primary); font-weight: bold; text-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
+        #status { font-size: 16px; margin: 10px 0; min-height: 24px; color: #f1c40f; font-weight: bold; }
+
+        #chat-box { 
+            background: #1a1a1a; 
+            border-radius: 15px; 
+            border: 1px solid #333; 
+            margin-top: 15px; 
+            text-align: left; 
+            display: flex; 
+            flex-direction: column; 
+            height: 150px; 
+        }
+        #chat-content { flex-grow: 1; overflow-y: auto; padding: 12px; font-size: 13px; color: #ccc; }
+        .chat-input-area { display: flex; padding: 8px; border-top: 1px solid #333; }
+        .chat-input-area input { flex-grow: 1; margin: 0; border-radius: 8px 0 0 8px; height: 40px; }
+        .chat-input-area button { width: 70px; margin: 0; border-radius: 0 8px 8px 0; height: 40px; }
+
+        .bottom-nav { display: flex; gap: 8px; margin-top: 15px; }
+        .bottom-nav button { font-size: 12px; padding: 10px; flex: 1; }
+
+        /* --- MA SÓI STYLES --- */
+        #ww-timer { font-size: 28px; font-weight: bold; margin: 10px 0; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .ww-status { font-size: 15px; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 10px; margin-bottom: 15px; color: #fff; border: 1px solid #444; }
+        .ww-my-role { 
+            font-size: 18px; 
+            color: var(--primary); 
+            font-weight: bold; 
+            margin-bottom: 15px; 
+            border: 2px dashed var(--primary); 
+            padding: 10px; 
+            border-radius: 12px;
+            background: rgba(241, 196, 15, 0.1);
+        }
+        .ww-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        .ww-player { 
+            background: #2c3e50; 
+            border: 2px solid #34495e; 
+            border-radius: 10px; 
+            padding: 12px 2px; 
+            font-size: 12px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            position: relative; 
+            min-height: 55px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .ww-player.dead { 
+            background: #111; 
+            border-color: var(--danger); 
+            opacity: 0.6; 
+            pointer-events: none; 
+            text-decoration: line-through; 
+            color: #777; 
+        }
+        .ww-player.selected { border-color: var(--success); background: #27ae60; transform: translateY(-3px); }
+        .ww-player .vote-badge { 
+            position: absolute; 
+            top: -8px; 
+            right: -8px; 
+            background: var(--danger); 
+            color: white; 
+            width: 20px; 
+            height: 20px; 
+            border-radius: 50%; 
+            font-size: 11px; 
+            line-height: 20px; 
+            display: none; 
+            font-weight: bold;
+            border: 1px solid white;
+        }
+        #ww-chat-box { 
+            background: #111; 
+            border: 1px solid #444; 
+            border-radius: 12px; 
+            height: 160px; 
+            display: flex; 
+            flex-direction: column; 
+            text-align: left; 
+            margin-bottom: 15px; 
+        }
+        #ww-chat-content { flex-grow: 1; overflow-y: auto; padding: 10px; font-size: 12px; color: #ddd; }
+        .ww-chat-input { display: flex; padding: 5px; }
+        .ww-chat-input input { border-radius: 8px 0 0 8px; margin: 0; height: 40px; }
+        .ww-chat-input button { border-radius: 0 8px 8px 0; margin: 0; width: 70px; font-size: 13px; }
+        
+        .ww-action-btn { 
+            background: var(--blue); 
+            color: white; 
+            padding: 15px; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            width: 100%; 
+            margin-top: 10px; 
+            display: none; 
+            box-shadow: 0 5px 0 #2980b9;
+        }
+        #ww-start-game-btn { 
+            background: var(--success); 
+            color: white; 
+            padding: 18px; 
+            font-size: 20px; 
+            margin-bottom: 15px; 
+            box-shadow: 0 6px 0 #27ae60;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="screen-auth">
-        <h3 id="auth-title">ĐĂNG NHẬP / ĐĂNG KÝ</h3>
+        <h2 id="auth-title" style="color: var(--primary); margin-bottom: 20px;">GAME CENTER LOGIN</h2>
         <form id="auth-form">
-            <input type="text" id="username" placeholder="Tên đăng nhập" required>
-            <input type="password" id="password" placeholder="Mật khẩu" required>
-            <button type="submit" style="background: var(--success); color: white;">VÀO GAME</button>
+            <input type="text" id="username" placeholder="Tên đăng nhập..." required>
+            <input type="password" id="password" placeholder="Mật khẩu..." required>
+            <button type="submit" style="background: var(--success); color: white; margin-top: 15px; height: 50px;">VÀO TRÒ CHƠI</button>
         </form>
-        <p onclick="toggleAuth()" id="toggle-text" style="color: #888; cursor: pointer; margin-top: 10px; font-size: 12px;">Đã có tài khoản? Đăng nhập</p>
+        <p onclick="toggleAuth()" id="toggle-text" style="color: #aaa; cursor: pointer; margin-top: 20px; font-size: 14px;">Chưa có tài khoản? <span style="color: var(--blue)">Đăng ký ngay</span></p>
     </div>
 
     <div id="screen-lobby" class="hidden">
-        <h3>SẢNH CHỜ</h3>
-        <p>Chào, <b id="lobby-name" style="color:var(--primary)"></b></p>
+        <h3 style="margin-top: 0;">XIN CHÀO, <span id="lobby-name" style="color:var(--primary)"></span></h3>
         <div class="balance-card">
-            <div style="font-size: 12px;">Ví của bạn</div>
+            <div style="font-size: 14px; color: #ccc;">Số dư khả dụng</div>
             <div class="balance-amount">$<span id="lobby-balance">0</span></div>
         </div>
-        <button onclick="dailyCheckin()" style="background: var(--purple); color:white;">🎁 ĐIỂM DANH ($5,000)</button>
-        <button onclick="goToGame()" style="padding:15px; background:var(--blue); color:white; font-size:18px;">🌍 VÀO PHÒNG CHUNG</button>
-        <button onclick="logout()" style="background:none; color:#555; text-decoration:underline; font-size:11px;">Đăng xuất</button>
+        <div class="leaderboard">
+            <h4>🏆 BẢNG XẾP HẠNG ĐẠI GIA</h4>
+            <div id="top-users">Đang kết nối...</div>
+        </div>
+        <button onclick="dailyCheckin()" style="background: var(--purple); color:white; margin-bottom: 10px; height: 50px;">🎁 NHẬN QUÀ HÀNG NGÀY ($5,000)</button>
+        <button onclick="goToGame('chanle')" style="padding:18px; background:var(--blue); color:white; font-size:18px;">🎲 MINI GAME CHẴN LẺ</button>
+        <button onclick="goToGame('masoi')" style="padding:18px; background:#c0392b; color:white; font-size:18px; margin-top:10px; border: 2px solid #e74c3c;">🐺 MA SÓI ONLINE (BOTS)</button>
+        <button onclick="logout()" style="background:none; color:#777; text-decoration:underline; font-size:12px; margin-top:20px; text-transform: none;">Đăng xuất khỏi hệ thống</button>
     </div>
 
-    <div id="screen-game" class="hidden">
-        <div class="balance-card">
-            <div>Số dư: <span class="balance-amount">$<span id="balance">0</span></span></div>
+    <div id="screen-game-chanle" class="hidden">
+        <div class="balance-card" style="padding: 10px;">
+            <div style="font-size: 12px;">Vốn: <span class="balance-amount" style="font-size: 20px;">$<span id="balance-cl">0</span></span></div>
         </div>
-
-        <div id="timer-box">15s</div>
-        <div class="dice-container">
-            <div id="d1" class="dice">?</div>
-            <div id="d2" class="dice">?</div>
-            <div id="d3" class="dice">?</div>
+        <div id="timer-box">00s</div>
+        <div class="dice-area">
+            <div class="dice-container">
+                <div id="d1" class="dice">?</div>
+                <div id="d2" class="dice">?</div>
+                <div id="d3" class="dice">?</div>
+            </div>
+            <div id="bowl" class="bowl"></div>
         </div>
-
-        <input type="number" id="bet-amount" style="text-align:center; font-size:20px;" placeholder="Tiền cược...">
+        <div id="status">Chờ ván mới...</div>
+        <input type="number" id="bet-amount" style="text-align:center; font-size:24px; font-weight: bold; color: var(--primary);" placeholder="Nhập tiền cược...">
         <div class="quick-bet">
             <button onclick="addBet(1000)">+1K</button>
             <button onclick="addBet(10000)">+10K</button>
-            <button onclick="addBet(50000)">+50K</button>
-            <button onclick="addBet(0)" style="color:var(--danger)">Xóa</button>
+            <button onclick="addBet(100000)">+100K</button>
+            <button onclick="addBet(0)" style="color:var(--danger); font-weight: bold;">XOÁ</button>
         </div>
-
         <div class="btn-group">
-            <button onclick="bet('Chẵn')" style="background: var(--blue); border-radius: 8px 8px 0 0;">CHẴN</button>
-            <button onclick="bet('Lẻ')" style="background: var(--danger); border-radius: 8px 8px 0 0;">LẺ</button>
+            <button onclick="bet('Chẵn')" style="background: var(--blue);">CHẴN</button>
+            <button onclick="bet('Lẻ')" style="background: var(--danger);">LẺ</button>
         </div>
         <div class="bet-info-container">
-            <div class="bet-pool">
-                <div class="pool-label">TỔNG CHẴN</div>
-                <div class="pool-amount">$<span id="pool-chan">0</span></div>
-            </div>
-            <div class="bet-pool">
-                <div class="pool-label">TỔNG LẺ</div>
-                <div class="pool-amount">$<span id="pool-le">0</span></div>
-            </div>
+            <div class="bet-pool"><div class="pool-label">CỬA CHẴN</div><div class="pool-amount">$<span id="pool-chan">0</span></div></div>
+            <div class="bet-pool"><div class="pool-label">CỬA LẺ</div><div class="pool-amount">$<span id="pool-le">0</span></div></div>
         </div>
-
-        <div id="status">Sẵn sàng đặt cược...</div>
-
         <div id="chat-box">
             <div id="chat-content"></div>
             <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Chat...">
-                <button onclick="sendMessage()" style="width:60px; margin:0; background:var(--blue); color:white;">GỬI</button>
+                <input type="text" id="chat-input" placeholder="Nhập nội dung chat...">
+                <button onclick="sendMessage()" style="background:var(--blue); color:white;">GỬI</button>
             </div>
         </div>
-
         <div class="bottom-nav">
-            <button onclick="showGift()" style="background:var(--purple); color:white;">CODE</button>
-            <button onclick="showBank()" style="background:var(--success); color:white;">BANK</button>
+            <button onclick="showGift()" style="background:var(--purple); color:white;">GIFTCODE</button>
+            <button onclick="showBank()" style="background:var(--success); color:white;">CHUYỂN TIỀN</button>
             <button onclick="backToLobby()" style="background:#444; color:white;">THOÁT</button>
         </div>
+    </div>
+
+    <div id="screen-game-masoi" class="hidden">
+        <h3 style="margin-top:0; color: #c0392b; letter-spacing: 2px;">LÀNG MA SÓI</h3>
+        <div class="balance-card" style="padding: 10px; border-color: #c0392b;">
+            <div style="font-size: 12px;">Số dư: <span class="balance-amount" style="font-size:18px;">$<span id="balance-ww">0</span></span></div>
+        </div>
+        <div class="ww-my-role" id="ww-role-display">Đang chuẩn bị...</div>
+        <div id="ww-timer" style="color: var(--day);">00s</div>
+        <div class="ww-status" id="ww-status">Đang đợi chủ phòng bắt đầu...</div>
+        <div class="ww-grid" id="ww-players-grid"></div>
+        <button id="ww-start-game-btn" onclick="wwConfirmStart()">BẮT ĐẦU VÁN ĐẤU</button>
+        <button id="ww-action-btn" class="ww-action-btn" onclick="wwExecuteAction()">XÁC NHẬN CHỌN</button>
+        <div id="ww-chat-box">
+            <div id="ww-chat-content"></div>
+            <div class="ww-chat-input">
+                <input type="text" id="ww-chat-input" placeholder="Thảo luận tại đây...">
+                <button onclick="wwSendMessage()" style="background: var(--success); color: white;">GỬI</button>
+            </div>
+        </div>
+        <button onclick="wwQuit()" style="background:#444; color:white; margin-top: 5px;">THOÁT RA SẢNH</button>
     </div>
 </div>
 
 <script>
+    // --- CẤU HÌNH FIREBASE (GIỮ CHÍNH XÁC THÔNG TIN BẠN CUNG CẤP) ---
     const firebaseConfig = {
         apiKey: "AIzaSyDDPxl6wvCSelFn35URRMz7De4lBKU0zy4",
         authDomain: "game-chan-le.firebaseapp.com",
@@ -134,158 +352,467 @@
         projectId: "game-chan-le",
         storageBucket: "game-chan-le.firebasestorage.app",
         messagingSenderId: "1096509265168",
-        appId: "1:1096509265168:web:a93327d20e033674d98195"
+        appId: "1:1096509265168:web:a93327d20e033674d98195",
+        measurementId: "G-GCE33P6H2C"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    let user = null, myBetSide = null, myBetVal = 0, lock = false, isLoginMode = true;
-    let poolChan = 0, poolLe = 0;
+    let user = null;
+    let isLoginMode = true;
 
+    // --- CƠ CHẾ AUTH & LOBBY ---
     async function getUser(u) { return (await db.ref('users/' + u).once('value')).val(); }
     async function saveUser(u, data) { await db.ref('users/' + u).set(data); }
 
-    function toggleAuth() {
-        isLoginMode = !isLoginMode;
-        document.getElementById('auth-title').innerText = isLoginMode ? "ĐĂNG NHẬP" : "ĐĂNG KÝ";
-        document.getElementById('toggle-text').innerText = isLoginMode ? "Chưa có tài khoản? Đăng ký" : "Đã có tài khoản? Đăng nhập";
+    function showScreen(id) { 
+        ['screen-auth', 'screen-lobby', 'screen-game-chanle', 'screen-game-masoi'].forEach(s => {
+            document.getElementById(s).classList.add('hidden');
+        }); 
+        document.getElementById(id).classList.remove('hidden'); 
+    }
+
+    function toggleAuth() { 
+        isLoginMode = !isLoginMode; 
+        document.getElementById('auth-title').innerText = isLoginMode ? "GAME CENTER LOGIN" : "GAME CENTER REGISTER"; 
+        document.getElementById('toggle-text').innerHTML = isLoginMode ? "Chưa có tài khoản? <span style='color: var(--blue)'>Đăng ký ngay</span>" : "Đã có tài khoản? <span style='color: var(--blue)'>Đăng nhập</span>"; 
     }
 
     document.getElementById('auth-form').onsubmit = async (e) => {
         e.preventDefault();
         const u = document.getElementById('username').value.trim().toLowerCase();
         const p = document.getElementById('password').value;
+        if(!u || !p) return;
+
         let data = await getUser(u);
-        if (isLoginMode) {
-            if (data && data.password === p) startLobby(u); else alert("Sai thông tin!");
-        } else {
-            if (data) alert("Tên đã tồn tại!");
-            else { await saveUser(u, { password: p, balance: 5000, lastCheckin: "", usedCodes: [] }); startLobby(u); }
+        if (isLoginMode) { 
+            if (data && data.password === p) startLobby(u); 
+            else alert("Sai tài khoản hoặc mật khẩu!"); 
+        } else { 
+            if (data) alert("Tên đăng nhập này đã được sử dụng!"); 
+            else { 
+                await saveUser(u, { password: p, balance: 5000, lastCheckin: "", usedCodes: [] }); 
+                alert("Đăng ký thành công! Bạn nhận được $5,000 khởi nghiệp.");
+                startLobby(u); 
+            } 
         }
     };
 
     function startLobby(uName) {
-        user = uName;
+        user = uName; 
         localStorage.setItem('session', uName);
-        showScreen('screen-lobby');
-        document.getElementById('lobby-name').innerText = uName;
+        showScreen('screen-lobby'); 
+        document.getElementById('lobby-name').innerText = uName.toUpperCase();
+        
         db.ref('users/' + user).on('value', snap => {
-            const d = snap.val();
-            if(d) {
-                document.getElementById('balance').innerText = d.balance.toLocaleString();
-                document.getElementById('lobby-balance').innerText = d.balance.toLocaleString();
+            if(snap.val()) {
+                const b = snap.val().balance;
+                document.getElementById('balance-cl').innerText = b.toLocaleString();
+                document.getElementById('balance-ww').innerText = b.toLocaleString();
+                document.getElementById('lobby-balance').innerText = b.toLocaleString();
             }
         });
-        initChat(); startBot();
+        loadLeaderboard(); 
+        initChat(); 
+        startBotCL();
     }
 
-    function initChat() {
-        db.ref('chats').limitToLast(15).on('value', snap => {
-            let h = ''; snap.forEach(c => { const v = c.val(); h += `<div><b>${v.u}:</b> ${v.m}</div>`; });
-            const div = document.getElementById('chat-content'); div.innerHTML = h; div.scrollTop = div.scrollHeight;
+    function loadLeaderboard() {
+        db.ref('users').orderByChild('balance').limitToLast(5).on('value', snap => {
+            let arr = []; 
+            snap.forEach(c => { arr.push({ u: c.key, b: c.val().balance }); }); 
+            arr.sort((a,b) => b.b - a.b);
+            let html = '';
+            arr.forEach((item, index) => {
+                const icon = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '👤';
+                html += `<div class="lb-item"><span>${icon} <b>${item.u}</b></span><span style="color:var(--primary)">$${item.b.toLocaleString()}</span></div>`;
+            });
+            document.getElementById('top-users').innerHTML = html || 'Chưa có dữ liệu...';
         });
     }
 
-    function sendMessage() {
-        const i = document.getElementById('chat-input'); if(!i.value.trim()) return;
-        db.ref('chats').push({ u: user, m: i.value, t: firebase.database.ServerValue.TIMESTAMP }); i.value = '';
+    function goToGame(type) { 
+        if(type === 'chanle') { showScreen('screen-game-chanle'); startClockCL(); } 
+        else if(type === 'masoi') { showScreen('screen-game-masoi'); initWerewolfLobby(); } 
     }
 
-    function startBot() {
+    function backToLobby() { showScreen('screen-lobby'); }
+    function logout() { localStorage.removeItem('session'); location.reload(); }
+
+    // --- LOGIC CHẴN LẺ (GIỮ NGUYÊN NẶN BÁT) ---
+    let myBetSide = null, myBetVal = 0, lockCL = true, poolChan = 0, poolLe = 0, canPeek = false, tempResult = null, startY = 0;
+    const bowl = document.getElementById('bowl');
+
+    function handleDragStart(e) { 
+        if(!canPeek) return; 
+        startY = e.touches ? e.touches[0].clientY : e.clientY; 
+        bowl.style.transition = 'none'; 
+    }
+    function handleDragMove(e) { 
+        if(!canPeek || !startY) return; 
+        let clientY = e.touches ? e.touches[0].clientY : e.clientY; 
+        let diff = clientY - startY; 
+        if(diff < 0) { 
+            bowl.style.transform = `translateY(${diff}px)`; 
+            if(diff < -80) { startY = 0; revealResult(); } 
+        } 
+    }
+    function handleDragEnd() { 
+        if(!canPeek) return; 
+        startY = 0; 
+        bowl.style.transition = '0.3s'; 
+        if(canPeek) bowl.style.transform = `translateY(0)`; 
+    }
+
+    bowl.addEventListener('touchstart', handleDragStart, {passive: true});
+    bowl.addEventListener('touchmove', handleDragMove, {passive: true});
+    bowl.addEventListener('touchend', handleDragEnd);
+    bowl.addEventListener('mousedown', handleDragStart);
+    window.addEventListener('mousemove', handleDragMove);
+    window.addEventListener('mouseup', handleDragEnd);
+
+    function startClockCL() {
+        if(window.timerSetCL) return; 
+        window.timerSetCL = true;
         setInterval(() => {
-            if (lock) return;
-            poolChan += Math.floor(Math.random() * 2000) + 100;
-            poolLe += Math.floor(Math.random() * 2000) + 100;
-            updatePoolUI();
-        }, 1500);
-    }
-
-    function updatePoolUI() {
-        document.getElementById('pool-chan').innerText = poolChan.toLocaleString();
-        document.getElementById('pool-le').innerText = poolLe.toLocaleString();
-    }
-
-    function startClock() {
-        if(window.timerSet) return; window.timerSet = true;
-        setInterval(() => {
-            const sec = new Date().getSeconds() % 20;
-            if (sec < 15) {
-                lock = false; document.getElementById('timer-box').innerText = (15 - sec) + "s";
-                document.getElementById('timer-box').style.color = "var(--primary)";
-            } else {
-                if (!lock) { lock = true; processResult(); }
-                document.getElementById('timer-box').innerText = "LẮC!";
-                document.getElementById('timer-box').style.color = "var(--danger)";
+            if(document.getElementById('screen-game-chanle').classList.contains('hidden')) return;
+            const sec = new Date().getSeconds() % 30; 
+            if (sec < 20) {
+                if(lockCL) { 
+                    lockCL = false; canPeek = false; 
+                    bowl.style.transform = 'translateY(-180px)'; 
+                    bowl.style.opacity = '0'; 
+                    poolChan = 0; poolLe = 0; 
+                    updatePoolUI(); 
+                    document.getElementById('status').innerText = "Mời đặt cược!"; 
+                }
+                document.getElementById('timer-box').innerText = (20 - sec) + "s";
+                document.getElementById('timer-box').style.color = (20 - sec) <= 5 ? "var(--danger)" : "var(--primary)";
+            } else if (sec === 20) {
+                if (!lockCL) { 
+                    lockCL = true; 
+                    generateResult(); 
+                    bowl.style.transform = 'translateY(0)'; 
+                    bowl.style.opacity = '1'; 
+                    document.getElementById('status').innerText = "ĐANG MỞ BÁT..."; 
+                    setTimeout(() => { 
+                        canPeek = true; 
+                        document.getElementById('status').innerText = "HÃY VUỐT LÊN ĐỂ NẶN!"; 
+                    }, 800); 
+                }
+            } else if (sec === 28) { 
+                if (canPeek) revealResult(); 
             }
         }, 1000);
     }
 
-    async function bet(side) {
-        if (lock) return;
-        const amt = parseInt(document.getElementById('bet-amount').value);
-        if (isNaN(amt) || amt < 100) return alert("Cược ít nhất $100");
-        let d = await getUser(user);
-        if (d.balance < amt) return alert("Không đủ tiền!");
-        myBetSide = side; myBetVal = amt;
-        if (side === 'Chẵn') poolChan += amt; else poolLe += amt;
-        updatePoolUI();
-        document.getElementById('status').innerText = `Đã cược ${side} $${amt.toLocaleString()}`;
+    function generateResult() { 
+        const d1 = Math.floor(Math.random()*6)+1;
+        const d2 = Math.floor(Math.random()*6)+1;
+        const d3 = Math.floor(Math.random()*6)+1;
+        const sum = d1 + d2 + d3;
+        tempResult = { d1, d2, d3, res: sum % 2 === 0 ? 'Chẵn' : 'Lẻ' }; 
+        document.getElementById('d1').innerText = d1; 
+        document.getElementById('d2').innerText = d2; 
+        document.getElementById('d3').innerText = d3; 
     }
 
-    async function processResult() {
-        let winRate = 50;
-        if (myBetSide) {
-            const isHeavy = (myBetSide === 'Chẵn' && poolChan > poolLe) || (myBetSide === 'Lẻ' && poolLe > poolChan);
-            winRate = isHeavy ? 30 : 70;
-        }
-        const d1 = Math.floor(Math.random()*6)+1, d2 = Math.floor(Math.random()*6)+1, d3 = Math.floor(Math.random()*6)+1;
-        const res = ((d1+d2+d3) % 2 === 0) ? 'Chẵn' : 'Lẻ';
-        document.getElementById('d1').innerText = d1; document.getElementById('d2').innerText = d2; document.getElementById('d3').innerText = d3;
-        if (myBetSide) {
-            let data = await getUser(user);
-            if (res === myBetSide) data.balance += myBetVal; else data.balance -= myBetVal;
-            await saveUser(user, data);
-            document.getElementById('status').innerHTML = res === myBetSide ? `<b style="color:var(--success)">THẮNG +$${myBetVal.toLocaleString()}</b>` : `<b style="color:var(--danger)">THUA -$${myBetVal.toLocaleString()}</b>`;
+    async function revealResult() {
+        if(!canPeek) return; 
+        canPeek = false; 
+        bowl.style.transform = 'translateY(-180px)'; 
+        bowl.style.opacity = '0';
+        
+        if (myBetSide) { 
+            let d = await getUser(user); 
+            if (tempResult.res === myBetSide) {
+                d.balance += myBetVal; 
+                document.getElementById('status').innerHTML = `<b style="color:var(--success)">THẮNG! +$${myBetVal.toLocaleString()}</b>`;
+            } else {
+                d.balance -= myBetVal; 
+                document.getElementById('status').innerHTML = `<b style="color:var(--danger)">THUA! -$${myBetVal.toLocaleString()}</b>`;
+            }
+            await saveUser(user, d); 
+        } else {
+            document.getElementById('status').innerHTML = `KẾT QUẢ: <b style="color:var(--primary)">${tempResult.res.toUpperCase()}</b>`;
         }
         myBetSide = null;
-        setTimeout(() => { poolChan = 0; poolLe = 0; updatePoolUI(); document.getElementById('status').innerText = "Mời cược!"; }, 3000);
     }
 
-    async function dailyCheckin() {
-        let d = await getUser(user); const t = new Date().toDateString();
-        if (d.lastCheckin === t) return alert("Đã nhận rồi!");
-        d.balance += 5000; d.lastCheckin = t; await saveUser(user, d); alert("+$5,000!");
+    async function bet(side) { 
+        const amt = parseInt(document.getElementById('bet-amount').value); 
+        if (lockCL) { alert("Đã hết thời gian cược!"); return; }
+        if (isNaN(amt) || amt < 100) { alert("Cược tối thiểu $100"); return; }
+        
+        let d = await getUser(user); 
+        if (d.balance < amt) { alert("Bạn không đủ tiền!"); return; }
+        
+        myBetSide = side; 
+        myBetVal = amt; 
+        if (side === 'Chẵn') poolChan += amt; else poolLe += amt; 
+        updatePoolUI();
+        document.getElementById('status').innerText = "Đã cược " + side + " $" + amt.toLocaleString();
     }
 
-    async function showGift() {
-        const c = prompt("Nhập Code:").toUpperCase(); if(!c) return;
-        let d = await getUser(user); if(!d.usedCodes) d.usedCodes = [];
-        const cs = { "TANTHU": 10000, "LNHAT": 20000 };
-        if (cs[c] && !d.usedCodes.includes(c)) {
-            d.balance += cs[c]; d.usedCodes.push(c); await saveUser(user, d); alert("Thành công!");
-        } else alert("Mã sai!");
+    function startBotCL() { 
+        setInterval(() => { 
+            if (!lockCL) { 
+                poolChan += Math.floor(Math.random()*5000); 
+                poolLe += Math.floor(Math.random()*5000); 
+                updatePoolUI(); 
+            } 
+        }, 2500); 
     }
 
-    async function showBank() {
-        const to = prompt("Người nhận:").toLowerCase(); const a = parseInt(prompt("Số tiền:"));
-        if (isNaN(a) || a <= 0 || to === user) return;
-        let mD = await getUser(user), tD = await getUser(to);
-        if (!tD || mD.balance < a) return alert("Lỗi!");
-        mD.balance -= a; tD.balance += a; await saveUser(user, mD); await saveUser(to, tD); alert("Xong!");
+    function updatePoolUI() { 
+        document.getElementById('pool-chan').innerText = poolChan.toLocaleString(); 
+        document.getElementById('pool-le').innerText = poolLe.toLocaleString(); 
     }
 
-    function showScreen(id) {
-        ['screen-auth', 'screen-lobby', 'screen-game'].forEach(s => document.getElementById(s).classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
+    function initChat() { 
+        db.ref('chats').limitToLast(20).on('value', snap => { 
+            let h = ''; 
+            snap.forEach(c => { h += `<div><b style="color:var(--blue)">${c.val().u}:</b> ${c.val().m}</div>`; }); 
+            const div = document.getElementById('chat-content'); 
+            div.innerHTML = h; 
+            div.scrollTop = div.scrollHeight; 
+        }); 
     }
-    function backToLobby() { showScreen('screen-lobby'); }
-    function goToGame() { showScreen('screen-game'); startClock(); }
-    function logout() { localStorage.removeItem('session'); location.reload(); }
-    function addBet(v) { let c = parseInt(document.getElementById('bet-amount').value) || 0; document.getElementById('bet-amount').value = (v === 0) ? "" : c + v; }
 
-    window.onload = async () => {
-        const s = localStorage.getItem('session');
-        if (s) { const d = await getUser(s); if (d) startLobby(s); }
+    function sendMessage() { 
+        const i = document.getElementById('chat-input'); 
+        if(i.value.trim()) { 
+            db.ref('chats').push({ u: user, m: i.value }); 
+            i.value = ''; 
+        } 
+    }
+
+    function addBet(v) { 
+        let c = parseInt(document.getElementById('bet-amount').value) || 0; 
+        document.getElementById('bet-amount').value = (v === 0) ? "" : c + v; 
+    }
+
+    async function showGift() { 
+        const c = prompt("Nhập Giftcode:").toUpperCase(); 
+        let d = await getUser(user); 
+        if (c === "TANTHU" && !d.usedCodes?.includes(c)) { 
+            d.balance += 10000; 
+            d.usedCodes = [...(d.usedCodes||[]), c]; 
+            await saveUser(user, d); 
+            alert("Chúc mừng! Bạn nhận được $10,000"); 
+        } else {
+            alert("Code không hợp lệ hoặc đã sử dụng!");
+        }
+    }
+
+    async function showBank() { 
+        const to = prompt("Tên người nhận:").toLowerCase();
+        if(to === user) return alert("Không thể tự gửi cho mình!");
+        const a = parseInt(prompt("Số tiền muốn chuyển:")); 
+        let mD = await getUser(user), tD = await getUser(to); 
+        if (tD && mD.balance >= a && a > 0) { 
+            mD.balance -= a; 
+            tD.balance += a; 
+            await saveUser(user, mD); 
+            await saveUser(to, tD); 
+            alert("Giao dịch thành công!"); 
+        } else {
+            alert("Thông tin không chính xác hoặc số dư không đủ!");
+        }
+    }
+
+    async function dailyCheckin() { 
+        let d = await getUser(user); 
+        const t = new Date().toDateString(); 
+        if (d.lastCheckin !== t) { 
+            d.balance += 5000; 
+            d.lastCheckin = t; 
+            await saveUser(user, d); 
+            alert("Bạn nhận được $5,000 quà điểm danh hôm nay!"); 
+        } else {
+            alert("Hôm nay bạn đã nhận quà rồi, quay lại vào ngày mai nhé!");
+        }
+    }
+
+    // --- LOGIC MA SÓI (BOTS SYSTEM) ---
+    let wwPlayers = [], wwPhase = 'WAIT', wwTimerInterval = null, wwSelectedPlayer = -1, wwNightKilled = -1, wwTimeLeft = 0;
+    const BOTS_NAMES = ["Bot Cường", "Bot Lan", "Bot Tuấn", "Bot Huy", "Bot Mai", "Bot Phong", "Bot Hưng"];
+    const ROLES = ['Sói', 'Sói', 'Phù thuỷ', 'Tiên tri', 'Thợ săn', 'Bảo vệ', 'Dân làng', 'Dân làng'];
+
+    function initWerewolfLobby() {
+        wwPhase = 'WAIT'; 
+        document.getElementById('ww-status').innerText = "Phòng đang chờ chủ phòng...";
+        document.getElementById('ww-role-display').innerText = "CHỦ PHÒNG: " + user.toUpperCase();
+        document.getElementById('ww-start-game-btn').style.display = 'block';
+        wwPlayers = [{ id: 0, name: user, role: '', isDead: false, isBot: false }];
+        renderWWGrid();
+        wwPushChat("QUẢN TRÒ", "Chào mừng đến với Làng Ma Sói. Bấm Bắt đầu để mời Bot.");
+    }
+
+    function wwConfirmStart() {
+        document.getElementById('ww-start-game-btn').style.display = 'none';
+        // Thêm Bot
+        for(let i=0; i<7; i++) { 
+            wwPlayers.push({ id: i+1, name: BOTS_NAMES[i], role: '', isDead: false, isBot: true }); 
+        }
+        // Chia bài ngẫu nhiên
+        let shuffled = [...ROLES].sort(() => Math.random() - 0.5);
+        wwPlayers.forEach((p, idx) => { p.role = shuffled[idx]; });
+        
+        document.getElementById('ww-role-display').innerText = "VAI TRÒ CỦA BẠN: " + wwPlayers[0].role.toUpperCase();
+        renderWWGrid(); 
+        wwPushChat("HỆ THỐNG", "Ván đấu bắt đầu! Mọi người đi ngủ nào..."); 
+        setTimeout(startWWNight, 3000);
+    }
+
+    function renderWWGrid() {
+        const grid = document.getElementById('ww-players-grid'); 
+        grid.innerHTML = '';
+        wwPlayers.forEach((p, idx) => {
+            const div = document.createElement('div'); 
+            div.className = `ww-player ${p.isDead ? 'dead' : ''}`; 
+            div.id = `ww-p-${idx}`;
+            div.innerHTML = `
+                <div style="font-weight:bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.name}</div>
+                <div class="vote-badge" id="ww-vote-${idx}">0</div>
+            `;
+            div.onclick = () => wwSelectPlayer(idx); 
+            grid.appendChild(div);
+        });
+        // Fill các ô trống nếu chưa đủ 8
+        for(let i = wwPlayers.length; i < 8; i++) { 
+            let d = document.createElement('div'); 
+            d.className = 'ww-player'; 
+            d.style.border = '1px dashed #444'; 
+            d.style.background = 'transparent';
+            d.innerHTML = '...'; 
+            grid.appendChild(d); 
+        }
+    }
+
+    function wwSelectPlayer(idx) {
+        if(wwPhase === 'WAIT' || wwPlayers[idx].isDead || wwPlayers[0].isDead) return;
+        if(wwSelectedPlayer !== -1) {
+            const prev = document.getElementById(`ww-p-${wwSelectedPlayer}`);
+            if(prev) prev.classList.remove('selected');
+        }
+        wwSelectedPlayer = idx; 
+        document.getElementById(`ww-p-${idx}`).classList.add('selected');
+        document.getElementById('ww-action-btn').style.display = 'block';
+    }
+
+    function startWWNight() {
+        wwPhase = 'NIGHT'; 
+        wwSelectedPlayer = -1; 
+        document.body.style.background = "var(--night)";
+        document.getElementById('ww-status').innerText = "ĐÊM XUỐNG: Sói đang đi săn...";
+        document.getElementById('ww-action-btn').innerText = wwPlayers[0].role === 'Sói' ? "CẮN NGƯỜI NÀY" : "XÁC NHẬN CHỌN";
+        
+        startWWTimer(15, () => {
+            // Logic Sói Bot cắn người
+            let alives = wwPlayers.filter(p => !p.isDead && p.role !== 'Sói');
+            if(alives.length > 0) wwNightKilled = alives[Math.floor(Math.random()*alives.length)].id;
+            
+            // Nếu User là Sói và có chọn mục tiêu
+            if(wwPlayers[0].role === 'Sói' && wwSelectedPlayer !== -1) wwNightKilled = wwSelectedPlayer;
+            
+            if(wwNightKilled !== -1) wwPlayers[wwNightKilled].isDead = true;
+            startWWDay();
+        });
+    }
+
+    function startWWDay() {
+        if(wwCheckWin()) return; 
+        wwPhase = 'DAY'; 
+        document.body.style.background = "var(--bg-dark)";
+        document.getElementById('ww-status').innerText = "SÁNG RỒI: Thảo luận tìm Sói!";
+        wwPushChat("QUẢN TRÒ", wwNightKilled !== -1 ? `Trời sáng, ${wwPlayers[wwNightKilled].name} đã bị Sói cắn chết!` : "Một đêm an bình, không ai chết cả.");
+        renderWWGrid(); 
+        startWWTimer(25, startWWVote);
+    }
+
+    function startWWVote() { 
+        wwPhase = 'VOTE'; 
+        wwSelectedPlayer = -1; 
+        document.getElementById('ww-status').innerText = "BIỂU QUYẾT: Chọn người bạn nghi là Sói!"; 
+        document.getElementById('ww-action-btn').innerText = "TREO CỔ NGƯỜI NÀY";
+        startWWTimer(15, endWWVote); 
+    }
+
+    function endWWVote() {
+        // Logic Bot vote ngẫu nhiên
+        let voteCounts = new Array(wwPlayers.length).fill(0);
+        wwPlayers.forEach(p => {
+            if(!p.isDead) {
+                let target = Math.floor(Math.random() * wwPlayers.length);
+                while(wwPlayers[target].isDead) target = Math.floor(Math.random() * wwPlayers.length);
+                voteCounts[target]++;
+            }
+        });
+
+        // Nếu User có vote
+        if(wwSelectedPlayer !== -1) voteCounts[wwSelectedPlayer] += 2;
+
+        let kickedIdx = voteCounts.indexOf(Math.max(...voteCounts));
+        wwPlayers[kickedIdx].isDead = true;
+        wwPushChat("QUẢN TRÒ", `Dân làng đã quyết định treo cổ ${wwPlayers[kickedIdx].name}!`);
+        
+        renderWWGrid(); 
+        if(!wwCheckWin()) setTimeout(startWWNight, 4000);
+    }
+
+    function wwCheckWin() {
+        let w = wwPlayers.filter(p => p.role === 'Sói' && !p.isDead).length;
+        let t = wwPlayers.filter(p => p.role !== 'Sói' && !p.isDead).length;
+        if(w >= t) { alert("SÓI ĐÃ THẮNG TRÒ CHƠI!"); wwQuit(); return true; }
+        if(w === 0) { alert("DÂN LÀNG ĐÃ CHIẾN THẮNG!"); wwQuit(); return true; }
+        return false;
+    }
+
+    function startWWTimer(s, cb) { 
+        clearInterval(wwTimerInterval); 
+        wwTimeLeft = s; 
+        document.getElementById('ww-timer').innerText = wwTimeLeft + "s";
+        wwTimerInterval = setInterval(() => { 
+            wwTimeLeft--; 
+            document.getElementById('ww-timer').innerText = wwTimeLeft + "s"; 
+            if(wwTimeLeft <= 0) { clearInterval(wwTimerInterval); cb(); } 
+        }, 1000); 
+    }
+
+    function wwExecuteAction() {
+        if(wwSelectedPlayer === -1) return;
+        document.getElementById('ww-action-btn').style.display = 'none';
+        wwPushChat("BẠN", "Đã chọn " + wwPlayers[wwSelectedPlayer].name);
+    }
+
+    function wwPushChat(s, m) { 
+        const d = document.getElementById('ww-chat-content'); 
+        d.innerHTML += `<div><b style="color:var(--primary)">${s}:</b> ${m}</div>`; 
+        d.scrollTop = d.scrollHeight; 
+    }
+
+    function wwSendMessage() { 
+        const i = document.getElementById('ww-chat-input'); 
+        if(i.value.trim()) { 
+            wwPushChat(user.toUpperCase(), i.value); 
+            i.value = ''; 
+        } 
+    }
+
+    function wwQuit() { 
+        clearInterval(wwTimerInterval); 
+        backToLobby(); 
+        document.body.style.background = "var(--bg-dark)";
+    }
+
+    // Tự động đăng nhập nếu có session
+    window.onload = async () => { 
+        const s = localStorage.getItem('session'); 
+        if (s) { 
+            const d = await getUser(s); 
+            if (d) startLobby(s); 
+        } 
     };
 </script>
 </body>
