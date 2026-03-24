@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Game Center V20.0 - Multiplayer Werewolf Edition</title>
+    <title>Game Lnhat update 1.2</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -252,10 +252,6 @@
             box-shadow: 0 6px 0 #27ae60;
         }
 
-        /* ================================================================
-           THÀNH PHẦN MỚI CHO TẠO PHÒNG (MULTIPLE PLAYERS)
-           ================================================================
-        */
         .ww-room-controls {
             background: #1a1a1a; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #444;
         }
@@ -275,7 +271,11 @@
         <p onclick="toggleAuth()" id="toggle-text" style="color: #aaa; cursor: pointer; margin-top: 20px; font-size: 14px;">Chưa có tài khoản? <span style="color: var(--blue)">Đăng ký ngay</span></p>
     </div>
 
-    <div id="screen-lobby" class="hidden">
+    <div id="screen-lobby" class="hidden" style="position: relative;">
+        <div style="position: absolute; top: -5px; left: -5px; background: rgba(0,0,0,0.6); padding: 5px 10px; border-radius: 10px; font-size: 12px; border: 1px solid #444; z-index: 10;">
+            🟢 Online: <span id="online-count" style="color: var(--success); font-weight: bold;">0</span>
+        </div>
+
         <h3 style="margin-top: 0;">XIN CHÀO, <span id="lobby-name" style="color:var(--primary)"></span></h3>
         <div class="balance-card">
             <div style="font-size: 14px; color: #ccc;">Số dư khả dụng</div>
@@ -291,7 +291,9 @@
         <button onclick="logout()" style="background:none; color:#777; text-decoration:underline; font-size:12px; margin-top:20px; text-transform: none;">Đăng xuất khỏi hệ thống</button>
     </div>
 
-    <div id="screen-game-chanle" class="hidden">
+    <div id="screen-game-chanle" class="hidden" style="position: relative;">
+        <button onclick="alert('Lịch sử server (Từ cũ đến mới):\n' + (window.historyCL && window.historyCL.length ? window.historyCL.join(' ➔ ') : 'Chưa có ván nào!'))" style="position: absolute; top: -5px; left: -5px; width: auto; padding: 5px 10px; font-size: 10px; background: #333; margin: 0; z-index: 10;">🕒 LỊCH SỬ</button>
+
         <div class="balance-card" style="padding: 10px;">
             <div style="font-size: 12px;">Vốn: <span class="balance-amount" style="font-size: 20px;">$<span id="balance-cl">0</span></span></div>
         </div>
@@ -368,12 +370,8 @@
 </div>
 
 <script>
-    /* ================================================================
-       PHẦN 2: CONFIG & THÊM CÁC BIẾN QUẢN LÝ ADMIN/CHỐNG LẠM PHÁT
-       ================================================================
-    */
-    const ADMIN_USERNAME = "admin"; // <=== ĐỔI TÊN NÀY THÀNH TÊN NICK TRONG GAME CỦA BẠN ĐỂ DÙNG LỆNH BAN
-    let currentBalance = 0; // Biến này dùng để check chống lạm phát
+    const ADMIN_USERNAME = "admin";
+    let currentBalance = 0;
 
     const firebaseConfig = {
         apiKey: "AIzaSyDDPxl6wvCSelFn35URRMz7De4lBKU0zy4",
@@ -392,15 +390,11 @@
     let isLoginMode = true;
     let current_room_id = null;
     let is_room_host = false;
+    window.historyCL = [];
 
-    /* ================================================================
-       PHẦN 3: LOGIC HỆ THỐNG GỐC 
-       ================================================================
-    */
     async function getUser(u) { return (await db.ref('users/' + u).once('value')).val(); }
     async function saveUser(u, data) { await db.ref('users/' + u).set(data); }
 
-    // --- NÚT BANK & GIFTCODE ---
     async function showBank() {
         const receiver = prompt("Nhập tên người nhận:");
         if (!receiver) return;
@@ -421,21 +415,28 @@
         alert(`Đã chuyển $${amount.toLocaleString()} tới ${receiver}`);
     }
 
+    // [TÍNH NĂNG MỚI] Đã thêm CODE: THCS, 3040 & Khôi phục ẩn mã LNHAT
     async function showGift() {
-        const code = prompt("Nhập mã GIFTCODE:");
+        const code = prompt("Nhập mã GIFTCODE:")?.toUpperCase();
         if (!code) return;
         
-        if (code === "GAME2024") {
+        let reward = 0;
+        if (code === "GAME2025") reward = 50000;
+        else if (code === "THCS") reward = 20000;
+        else if (code === "3004") reward = 30000;
+        else if (code === "LNHAT") reward = 50000;
+
+        if (reward > 0) {
             const myData = await getUser(user);
             if (!myData.usedCodes) myData.usedCodes = [];
             if (myData.usedCodes.includes(code)) return alert("Bạn đã dùng mã này rồi!");
             
-            myData.balance += 50000;
+            myData.balance += reward;
             myData.usedCodes.push(code);
             await saveUser(user, myData);
-            alert("Chúc mừng! Bạn nhận được $50,000");
+            alert(`Chúc mừng! Bạn nhận được $${reward.toLocaleString()}`);
         } else {
-            alert("Mã Code không chính xác!");
+            alert("Mã Code không chính xác hoặc đã hết hạn!");
         }
     }
 
@@ -454,21 +455,16 @@
 
     document.getElementById('auth-form').onsubmit = async (e) => {
         e.preventDefault();
-
-        // [THÊM MỚI] KIỂM TRA LỆNH CẤM THIẾT BỊ NGAY TẠI TRÌNH DUYỆT
         if (localStorage.getItem('device_banned') === 'true') {
             return alert("⛔ Thiết bị này đã bị cấm truy cập vào game vĩnh viễn do vi phạm!");
         }
-
         const u = document.getElementById('username').value.trim().toLowerCase();
         const p = document.getElementById('password').value;
         if(!u || !p) return;
 
         let data = await getUser(u);
-
-        // [THÊM MỚI] KIỂM TRA XEM TÀI KHOẢN CÓ BỊ ADMIN KHÓA KHÔNG
         if (data && data.isBanned) {
-            localStorage.setItem('device_banned', 'true'); // Khóa luôn trình duyệt/thiết bị này
+            localStorage.setItem('device_banned', 'true');
             return alert("⛔ Tài khoản này đã bị Admin khóa vĩnh viễn!");
         }
 
@@ -494,11 +490,10 @@
         db.ref('users/' + user).on('value', snap => {
             if(snap.val()) {
                 const b = snap.val().balance;
-                currentBalance = b; // [THÊM MỚI] Lưu biến tài sản để dùng cho thuật toán soi tiền
+                currentBalance = b; 
                 document.getElementById('balance-cl').innerText = b.toLocaleString();
                 document.getElementById('lobby-balance').innerText = b.toLocaleString();
                 
-                // [THÊM MỚI] Đá ra nếu bị ban khi đang online
                 if(snap.val().isBanned) {
                     localStorage.setItem('device_banned', 'true');
                     alert("Tài khoản của bạn vừa bị Admin khóa. Bắt buộc đăng xuất!");
@@ -506,16 +501,29 @@
                 }
             }
         });
+
+        // [TÍNH NĂNG MỚI] Hiển thị tổng số người đang Online
+        const myPresence = db.ref(`online_users/${user}`);
+        db.ref('.info/connected').on('value', snap => {
+            if (snap.val() === true) {
+                myPresence.set(true);
+                myPresence.onDisconnect().remove();
+            }
+        });
+        db.ref('online_users').on('value', snap => {
+            if(document.getElementById('online-count')) {
+                document.getElementById('online-count').innerText = snap.numChildren();
+            }
+        });
+
         loadLeaderboard(); 
         initChat(); 
-        startBotCL();
     }
 
     function loadLeaderboard() {
         db.ref('users').orderByChild('balance').limitToLast(5).on('value', snap => {
             let arr = []; 
             snap.forEach(c => { 
-                // Không hiển thị nick bị khóa lên bảng xếp hạng
                 if(!c.val().isBanned) arr.push({ u: c.key, b: c.val().balance }); 
             }); 
             arr.sort((a,b) => b.b - a.b);
@@ -546,32 +554,37 @@
     function backToLobby() { showScreen('screen-lobby'); }
     function logout() { localStorage.removeItem('session'); location.reload(); }
 
-    /* ================================================================
-       PHẦN 4: LOGIC CHẴN LẺ GỐC & THÊM THUẬT TOÁN CHỐNG LẠM PHÁT
-       ================================================================
-    */
-    let myBetSide = null, myBetVal = 0, lockCL = true, poolChan = 0, poolLe = 0, canPeek = false, tempResult = null, startY = 0;
+    /* --- LOGIC CHẴN LẺ MỚI --- */
+    let myBetSide = null, myBetVal = 0, lockCL = true, poolChan = 0, poolLe = 0, canPeek = false, tempResult = null;
     const bowl = document.getElementById('bowl');
 
+    // [TÍNH NĂNG MỚI] Kéo bát theo 4 chiều
+    let startX = 0, startY = 0;
     function handleDragStart(e) { 
         if(!canPeek) return; 
+        startX = e.touches ? e.touches[0].clientX : e.clientX;
         startY = e.touches ? e.touches[0].clientY : e.clientY; 
         bowl.style.transition = 'none'; 
     }
     function handleDragMove(e) { 
-        if(!canPeek || !startY) return; 
+        if(!canPeek || !startX) return; 
+        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
         let clientY = e.touches ? e.touches[0].clientY : e.clientY; 
-        let diff = clientY - startY; 
-        if(diff < 0) { 
-            bowl.style.transform = `translateY(${diff}px)`; 
-            if(diff < -80) { startY = 0; revealResult(); } 
+        let diffX = clientX - startX;
+        let diffY = clientY - startY; 
+        
+        bowl.style.transform = `translate(${diffX}px, ${diffY}px)`; 
+        
+        // Mở bát nếu kéo quá khoảng cách
+        if(Math.abs(diffX) > 80 || diffY < -80 || diffY > 80) { 
+            startX = 0; startY = 0; revealResult(); 
         } 
     }
     function handleDragEnd() { 
         if(!canPeek) return; 
-        startY = 0; 
+        startX = 0; startY = 0; 
         bowl.style.transition = '0.3s'; 
-        if(canPeek) bowl.style.transform = `translateY(0)`; 
+        if(canPeek) bowl.style.transform = `translate(0px, 0px)`; 
     }
 
     bowl.addEventListener('touchstart', handleDragStart, {passive: true});
@@ -580,6 +593,14 @@
     bowl.addEventListener('mousedown', handleDragStart);
     window.addEventListener('mousemove', handleDragMove);
     window.addEventListener('mouseup', handleDragEnd);
+
+    // [TÍNH NĂNG MỚI] Đồng bộ Tổng tiền Server realtime
+    db.ref('server_pool').on('value', snap => {
+        let data = snap.val() || { 'Chẵn': 0, 'Lẻ': 0 };
+        poolChan = data['Chẵn'] || 0;
+        poolLe = data['Lẻ'] || 0;
+        updatePoolUI();
+    });
 
     function startClockCL() {
         if(window.timerSetCL) return; 
@@ -592,8 +613,8 @@
                     lockCL = false; canPeek = false; 
                     bowl.style.transform = 'translateY(-180px)'; 
                     bowl.style.opacity = '0'; 
-                    poolChan = 0; poolLe = 0; 
-                    updatePoolUI(); 
+                    // Reset cược server
+                    db.ref('server_pool').set({ 'Chẵn': 0, 'Lẻ': 0 });
                     document.getElementById('status').innerText = "Mời đặt cược!"; 
                 }
                 document.getElementById('timer-box').innerText = (20 - sec) + "s";
@@ -609,31 +630,41 @@
         }, 1000);
     }
 
+    // [TÍNH NĂNG MỚI] Đồng bộ Server & Cân Bằng Tỉ Lệ Tự Nhiên
     function generateResult() { 
-        let d1 = Math.floor(Math.random()*6)+1;
-        let d2 = Math.floor(Math.random()*6)+1;
-        let d3 = Math.floor(Math.random()*6)+1;
-        let res = (d1+d2+d3)%2===0 ? 'Chẵn' : 'Lẻ';
+        db.ref('server_result').once('value', snap => {
+            let now = Date.now();
+            let data = snap.val();
+            
+            // Nếu quá 10s chưa có kết quả mới, người này sẽ random cho server
+            if (!data || now - data.time > 10000) {
+                let d1 = Math.floor(Math.random()*6)+1;
+                let d2 = Math.floor(Math.random()*6)+1;
+                let d3 = Math.floor(Math.random()*6)+1;
+                let res = (d1+d2+d3)%2===0 ? 'Chẵn' : 'Lẻ';
 
-        // [THÊM MỚI] THUẬT TOÁN KÉO TIỀN TRÁNH LẠM PHÁT
-        if (myBetSide) {
-            // Nếu nick có hơn 1 triệu đô, 70% sẽ ép thua
-            if (currentBalance > 1000000 && Math.random() < 0.7) {
-                res = (myBetSide === 'Chẵn') ? 'Lẻ' : 'Chẵn';
-                while ((d1+d2+d3)%2===0 !== (res === 'Chẵn')) { d1 = Math.floor(Math.random()*6)+1; }
-            } 
-            // Nếu nick có hơn 500 ngàn đô, 50% sẽ ép thua
-            else if (currentBalance > 500000 && Math.random() < 0.5) {
-                res = (myBetSide === 'Chẵn') ? 'Lẻ' : 'Chẵn';
-                while ((d1+d2+d3)%2===0 !== (res === 'Chẵn')) { d1 = Math.floor(Math.random()*6)+1; }
+                // Tỉ lệ cân bằng không ép thắng/thua gắt. Kèo nào đổ nhiều tiền hơn thì tỉ lệ ra kèo đó giảm còn 45% (Nhà cái luôn có lợi 1 chút)
+                if (poolChan > poolLe && Math.random() < 0.55) { res = 'Lẻ'; }
+                else if (poolLe > poolChan && Math.random() < 0.55) { res = 'Chẵn'; }
+                
+                while ((d1+d2+d3)%2===0 !== (res === 'Chẵn')) { 
+                    d1 = Math.floor(Math.random()*6)+1; 
+                    d2 = Math.floor(Math.random()*6)+1; 
+                }
+
+                tempResult = { d1, d2, d3, res: res, time: now };
+                db.ref('server_result').set(tempResult);
+            } else {
+                tempResult = data;
             }
-            // Dưới mức đó sẽ ra 50/50 bình thường
-        }
-        
-        tempResult = { d1, d2, d3, res: res }; 
-        document.getElementById('d1').innerText = d1; 
-        document.getElementById('d2').innerText = d2; 
-        document.getElementById('d3').innerText = d3; 
+            
+            document.getElementById('d1').innerText = tempResult.d1; 
+            document.getElementById('d2').innerText = tempResult.d2; 
+            document.getElementById('d3').innerText = tempResult.d3; 
+            
+            if(window.historyCL.length > 9) window.historyCL.shift();
+            window.historyCL.push(tempResult.res);
+        });
     }
 
     async function revealResult() {
@@ -641,57 +672,71 @@
         bowl.style.transform = 'translateY(-180px)'; bowl.style.opacity = '0';
         if (myBetSide) { 
             let d = await getUser(user); 
-            if (tempResult.res === myBetSide) { d.balance += myBetVal; document.getElementById('status').innerHTML = `<b style="color:var(--success)">THẮNG! +$${myBetVal.toLocaleString()}</b>`; } 
-            else { d.balance -= myBetVal; document.getElementById('status').innerHTML = `<b style="color:var(--danger)">THUA! -$${myBetVal.toLocaleString()}</b>`; }
+            if (tempResult.res === myBetSide) { 
+                d.balance += myBetVal; 
+                document.getElementById('status').innerHTML = `<b style="color:var(--success)">THẮNG! +$${myBetVal.toLocaleString()}</b>`; 
+            } else { 
+                d.balance -= myBetVal; 
+                document.getElementById('status').innerHTML = `<b style="color:var(--danger)">THUA! -$${myBetVal.toLocaleString()}</b>`; 
+            }
             await saveUser(user, d); 
-        } else { document.getElementById('status').innerHTML = `KẾT QUẢ: <b style="color:var(--primary)">${tempResult.res.toUpperCase()}</b>`; }
-        myBetSide = null;
+        } else { 
+            document.getElementById('status').innerHTML = `KẾT QUẢ: <b style="color:var(--primary)">${tempResult.res.toUpperCase()}</b>`; 
+        }
+        myBetSide = null; myBetVal = 0;
     }
 
+    // [TÍNH NĂNG MỚI] Fix Lỗi Đặt Cược (PC ko gõ bậy chữ đc & Phải có tiền mới cược đc)
     function bet(side) {
-        const amt = parseInt(document.getElementById('bet-amount').value);
+        const amt = Math.floor(Number(document.getElementById('bet-amount').value));
         if (lockCL) return alert("Hết giờ cược!");
-        if (isNaN(amt) || amt < 100) return alert("Tối thiểu $100");
-        // [THÊM MỚI] Chống đặt quá số dư
-        if (amt > currentBalance) return alert("Bạn không đủ tiền để cược số tiền này!");
+        if (!amt || isNaN(amt) || amt < 100) return alert("Số tiền không hợp lệ (Tối thiểu $100)!");
+        if (amt > currentBalance) return alert("Số dư của bạn không đủ!");
+        
         myBetSide = side; myBetVal = amt;
         document.getElementById('status').innerText = "Đã cược " + side;
+        
+        // Bơm thẳng tiền cược lên pool server để nhảy số realtime
+        db.ref(`server_pool/${side}`).set(firebase.database.ServerValue.increment(amt));
     }
 
-    function startBotCL() { setInterval(() => { if (!lockCL) { poolChan += Math.floor(Math.random()*2000); poolLe += Math.floor(Math.random()*2000); updatePoolUI(); } }, 2000); }
-    function updatePoolUI() { document.getElementById('pool-chan').innerText = poolChan.toLocaleString(); document.getElementById('pool-le').innerText = poolLe.toLocaleString(); }
-    function addBet(v) { let c = parseInt(document.getElementById('bet-amount').value) || 0; document.getElementById('bet-amount').value = (v === 0) ? "" : c + v; }
+    function updatePoolUI() { 
+        document.getElementById('pool-chan').innerText = poolChan.toLocaleString(); 
+        document.getElementById('pool-le').innerText = poolLe.toLocaleString(); 
+    }
+    function addBet(v) { 
+        let c = Math.floor(Number(document.getElementById('bet-amount').value)) || 0; 
+        document.getElementById('bet-amount').value = (v === 0) ? "" : c + v; 
+    }
     
-    function initChat() { db.ref('chats').limitToLast(15).on('value', snap => { let h = ''; snap.forEach(c => { h += `<div><b>${c.val().u}:</b> ${c.val().m}</div>`; }); const div = document.getElementById('chat-content'); div.innerHTML = h; div.scrollTop = div.scrollHeight; }); }
+    function initChat() { 
+        db.ref('chats').limitToLast(15).on('value', snap => { 
+            let h = ''; 
+            snap.forEach(c => { h += `<div><b>${c.val().u}:</b> ${c.val().m}</div>`; }); 
+            const div = document.getElementById('chat-content'); 
+            div.innerHTML = h; 
+            div.scrollTop = div.scrollHeight; 
+        }); 
+    }
     
     function sendMessage() { 
         const i = document.getElementById('chat-input'); 
         let msg = i.value.trim();
         if(msg) { 
-            
-            // [THÊM MỚI] LỆNH BAN ADMIN
             if (msg.startsWith('/ban ') && user === ADMIN_USERNAME) {
                 let targetUser = msg.split(' ')[1];
                 if (targetUser) {
-                    targetUser = targetUser.toLowerCase();
-                    // Set trạng thái ban trong firebase
-                    db.ref('users/' + targetUser).update({ isBanned: true });
-                    // Gửi thông báo toàn server
-                    db.ref('chats').push({ u: '🛡️ HỆ THỐNG', m: `Đã cấm vĩnh viễn tài khoản và thiết bị của [${targetUser}].` });
+                    db.ref('users/' + targetUser.toLowerCase()).update({ isBanned: true });
+                    db.ref('chats').push({ u: '🛡️ HỆ THỐNG', m: `Đã cấm vĩnh viễn [${targetUser}].` });
                 }
-                i.value = '';
-                return; // Ngừng chạy để không hiện lệnh /ban ra kênh chat
+                i.value = ''; return; 
             }
-
             db.ref('chats').push({ u: user, m: msg }); 
             i.value = ''; 
         } 
     }
 
-    /* ================================================================
-       PHẦN 5: MA SÓI MULTIPLAYER (GIỮ NGUYÊN)
-       ================================================================
-    */
+    /* --- [TÍNH NĂNG MỚI] FIX LỖI MA SÓI (VÀO PHÒNG & THÊM BOT) --- */
     async function wwCreateRoom() {
         const roomId = Math.floor(1000 + Math.random() * 9000).toString(); 
         const roomData = { host: user, status: 'WAITING', players: {}, createdAt: Date.now() };
@@ -708,59 +753,59 @@
         wwEnterRoom(roomId);
     }
 
-    async function wwEnterRoom(roomId) {
+    function wwEnterRoom(roomId) {
         current_room_id = roomId;
-        document.getElementById('ww-room-id').innerText = roomId;
         showScreen('screen-game-masoi');
-        await db.ref('ww_rooms/' + roomId + '/players/' + user).set({ name: user, isDead: false, role: 'Dân làng' });
-        db.ref('ww_rooms/' + roomId).on('value', snap => {
-            const data = snap.val();
-            if(!data) return;
-            is_room_host = (data.host === user);
-            if(is_room_host && data.status === 'WAITING') document.getElementById('ww-start-game-btn').classList.remove('hidden');
-            else document.getElementById('ww-start-game-btn').classList.add('hidden');
-            wwUpdatePlayerGrid(data.players);
-            document.getElementById('ww-status').innerText = "Trạng thái: " + data.status;
+        document.getElementById('ww-room-id').innerText = roomId;
+        
+        db.ref('ww_rooms/' + roomId).once('value', snap => {
+            if(snap.val() && snap.val().host === user) {
+                is_room_host = true;
+                document.getElementById('ww-start-game-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('ww-start-game-btn').classList.add('hidden');
+            }
         });
-        wwListenChat(roomId);
-    }
-
-    function wwUpdatePlayerGrid(players) {
-        const grid = document.getElementById('ww-players-grid');
-        grid.innerHTML = '';
-        let count = 0;
-        for(let p in players) {
-            count++;
-            const div = document.createElement('div');
-            div.className = `ww-player ${players[p].isDead ? 'dead' : ''}`;
-            div.innerHTML = `<div style="font-weight:bold;">${players[p].name}</div>`;
-            grid.appendChild(div);
-        }
-    }
-
-    function wwListenChat(roomId) {
-        db.ref('ww_chats/' + roomId).limitToLast(10).on('value', snap => {
-            let h = '';
-            snap.forEach(c => { h += `<div><b>${c.val().u}:</b> ${c.val().m}</div>`; });
-            const box = document.getElementById('ww-chat-content');
-            box.innerHTML = h; box.scrollTop = box.scrollHeight;
+        
+        db.ref(`ww_rooms/${roomId}/players/${user}`).set({ role: 'Chưa rõ', isDead: false, isBot: false });
+        
+        db.ref(`ww_rooms/${roomId}/players`).on('value', snap => {
+            let players = snap.val() || {};
+            let html = '';
+            for(let p in players) {
+                html += `<div class="ww-player">${p} ${players[p].isBot ? '(BOT)' : ''}</div>`;
+            }
+            document.getElementById('ww-players-grid').innerHTML = html;
         });
     }
 
-    function wwSendMessage() {
-        const m = document.getElementById('ww-chat-input').value;
-        if(m && current_room_id) { db.ref('ww_chats/' + current_room_id).push({ u: user, m: m }); document.getElementById('ww-chat-input').value = ''; }
+    function wwConfirmStart() {
+        db.ref(`ww_rooms/${current_room_id}/players`).once('value', snap => {
+            let players = snap.val() || {};
+            let currentCount = Object.keys(players).length;
+            const MIN_PLAYERS = 6; 
+            
+            // TỰ ĐỘNG THÊM BOT NẾU THIẾU NGƯỜI
+            if(currentCount < MIN_PLAYERS) {
+                let botsNeeded = MIN_PLAYERS - currentCount;
+                for(let i=1; i<=botsNeeded; i++) {
+                    db.ref(`ww_rooms/${current_room_id}/players/Bot_Sói_${i}`).set({ role: 'Chưa rõ', isDead: false, isBot: true });
+                }
+                alert(`Không đủ người. Đã tự động thêm ${botsNeeded} Bot vào cho đủ team!`);
+            }
+            
+            db.ref(`ww_rooms/${current_room_id}`).update({ status: 'PLAYING' });
+            document.getElementById('ww-start-game-btn').classList.add('hidden');
+            document.getElementById('ww-status').innerText = "Trò chơi bắt đầu! Đang chia bài...";
+        });
     }
 
-    async function wwQuit() {
-        if(current_room_id) { await db.ref('ww_rooms/' + current_room_id + '/players/' + user).remove(); db.ref('ww_rooms/' + current_room_id).off(); }
-        backToLobby();
+    function wwQuit() {
+        if(current_room_id) db.ref(`ww_rooms/${current_room_id}/players/${user}`).remove();
+        current_room_id = null;
+        is_room_host = false;
+        showScreen('screen-game-masoi-lobby');
     }
-
-    window.onload = () => {
-        const s = localStorage.getItem('session');
-        if(s) getUser(s).then(d => { if(d) startLobby(s); });
-    };
 </script>
 </body>
 </html>
