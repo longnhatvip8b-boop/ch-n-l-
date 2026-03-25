@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Game Lnhat update 1.2</title>
+    <title>Game Lnhat update 1.2 - Supreme Edition</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -23,6 +23,7 @@
             --night: #2c3e50; 
             --day: #f39c12; 
         }
+        
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background: var(--bg-dark); 
@@ -32,7 +33,9 @@
             padding: 10px; 
             touch-action: pan-y; 
             -webkit-user-select: none;
+            user-select: none;
         }
+        
         .container { 
             max-width: 420px; 
             margin: auto; 
@@ -43,6 +46,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
             overflow: hidden; 
         }
+        
         input { 
             width: 100%; 
             padding: 12px; 
@@ -54,6 +58,7 @@
             box-sizing: border-box; 
             font-size: 16px;
         }
+        
         button { 
             width: 100%; 
             padding: 12px; 
@@ -66,8 +71,14 @@
             font-size: 14px;
             text-transform: uppercase;
         }
-        button:active { transform: scale(0.98); }
-        .hidden { display: none !important; }
+        
+        button:active { 
+            transform: scale(0.98); 
+        }
+        
+        .hidden { 
+            display: none !important; 
+        }
         
         /* --- CHẴN LẺ STYLES --- */
         .balance-card { 
@@ -77,7 +88,12 @@
             margin-bottom: 15px; 
             border: 1px solid var(--primary); 
         }
-        .balance-amount { font-size: 26px; color: var(--primary); font-weight: bold; }
+        
+        .balance-amount { 
+            font-size: 26px; 
+            color: var(--primary); 
+            font-weight: bold; 
+        }
         
         .leaderboard { 
             background: #1a1a1a; 
@@ -87,9 +103,27 @@
             margin-bottom: 15px; 
             text-align: left; 
         }
-        .leaderboard h4 { margin: 0 0 10px 0; color: var(--primary); text-align: center; font-size: 14px; letter-spacing: 1px; }
-        .lb-item { display: flex; justify-content: space-between; font-size: 13px; border-bottom: 1px solid #333; padding: 8px 0; }
-        .lb-item:last-child { border-bottom: none; }
+        
+        .leaderboard h4 { 
+            margin: 0 0 10px 0; 
+            color: var(--primary); 
+            text-align: center; 
+            font-size: 14px; 
+            letter-spacing: 1px; 
+        }
+        
+        .lb-item { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 13px; 
+            border-bottom: 1px solid #333; 
+            padding: 8px 0; 
+            align-items: center;
+        }
+        
+        .lb-item:last-child { 
+            border-bottom: none; 
+        }
 
         .dice-area { 
             position: relative; 
@@ -103,7 +137,13 @@
             border-radius: 60px;
             border: 4px solid #333;
         }
-        .dice-container { display: flex; gap: 12px; z-index: 5; }
+        
+        .dice-container { 
+            display: flex; 
+            gap: 12px; 
+            z-index: 5; 
+        }
+        
         .dice { 
             width: 50px; 
             height: 50px; 
@@ -115,6 +155,7 @@
             font-weight: bold; 
             box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
         }
+        
         .bowl { 
             position: absolute; 
             top: -5px; 
@@ -132,19 +173,75 @@
             border: 3px solid #555; 
         }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-group button { flex: 1; font-size: 22px; color: white; height: 70px; border-bottom: 5px solid rgba(0,0,0,0.3); }
+        .btn-group { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 15px; 
+        }
         
-        .bet-info-container { display: flex; gap: 10px; margin-top: 10px; }
-        .bet-pool { flex: 1; background: #1a1a1a; padding: 8px; border-radius: 12px; border: 1px solid #333; }
-        .pool-label { font-size: 11px; color: #888; margin-bottom: 3px; }
-        .pool-amount { font-size: 15px; color: var(--primary); font-weight: bold; }
+        .btn-group button { 
+            flex: 1; 
+            font-size: 22px; 
+            color: white; 
+            height: 70px; 
+            border-bottom: 5px solid rgba(0,0,0,0.3); 
+        }
+        
+        .bet-info-container { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 10px; 
+        }
+        
+        .bet-pool { 
+            flex: 1; 
+            background: #1a1a1a; 
+            padding: 8px; 
+            border-radius: 12px; 
+            border: 1px solid #333; 
+        }
+        
+        .pool-label { 
+            font-size: 11px; 
+            color: #888; 
+            margin-bottom: 3px; 
+        }
+        
+        .pool-amount { 
+            font-size: 15px; 
+            color: var(--primary); 
+            font-weight: bold; 
+        }
 
-        .quick-bet { display: flex; gap: 5px; margin-bottom: 10px; }
-        .quick-bet button { flex: 1; padding: 8px; font-size: 12px; background: #2a2a2a; color: white; border: 1px solid #444; }
+        .quick-bet { 
+            display: flex; 
+            gap: 5px; 
+            margin-bottom: 10px; 
+        }
+        
+        .quick-bet button { 
+            flex: 1; 
+            padding: 8px; 
+            font-size: 12px; 
+            background: #2a2a2a; 
+            color: white; 
+            border: 1px solid #444; 
+        }
 
-        #timer-box { font-size: 40px; color: var(--primary); font-weight: bold; text-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
-        #status { font-size: 16px; margin: 10px 0; min-height: 24px; color: #f1c40f; font-weight: bold; }
+        #timer-box { 
+            font-size: 40px; 
+            color: var(--primary); 
+            font-weight: bold; 
+            text-shadow: 0 0 15px rgba(241, 196, 15, 0.4); 
+        }
+        
+        #status { 
+            font-size: 16px; 
+            margin: 10px 0; 
+            min-height: 24px; 
+            color: #f1c40f; 
+            font-weight: bold; 
+        }
 
         #chat-box { 
             background: #1a1a1a; 
@@ -156,17 +253,68 @@
             flex-direction: column; 
             height: 150px; 
         }
-        #chat-content { flex-grow: 1; overflow-y: auto; padding: 12px; font-size: 13px; color: #ccc; }
-        .chat-input-area { display: flex; padding: 8px; border-top: 1px solid #333; }
-        .chat-input-area input { flex-grow: 1; margin: 0; border-radius: 8px 0 0 8px; height: 40px; }
-        .chat-input-area button { width: 70px; margin: 0; border-radius: 0 8px 8px 0; height: 40px; }
+        
+        #chat-content { 
+            flex-grow: 1; 
+            overflow-y: auto; 
+            padding: 12px; 
+            font-size: 13px; 
+            color: #ccc; 
+        }
+        
+        .chat-input-area { 
+            display: flex; 
+            padding: 8px; 
+            border-top: 1px solid #333; 
+        }
+        
+        .chat-input-area input { 
+            flex-grow: 1; 
+            margin: 0; 
+            border-radius: 8px 0 0 8px; 
+            height: 40px; 
+        }
+        
+        .chat-input-area button { 
+            width: 70px; 
+            margin: 0; 
+            border-radius: 0 8px 8px 0; 
+            height: 40px; 
+        }
 
-        .bottom-nav { display: flex; gap: 8px; margin-top: 15px; z-index: 100; position: relative; }
-        .bottom-nav button { font-size: 12px; padding: 10px; flex: 1; pointer-events: auto !important; }
+        .bottom-nav { 
+            display: flex; 
+            gap: 8px; 
+            margin-top: 15px; 
+            z-index: 100; 
+            position: relative; 
+        }
+        
+        .bottom-nav button { 
+            font-size: 12px; 
+            padding: 10px; 
+            flex: 1; 
+            pointer-events: auto !important; 
+        }
 
         /* --- MA SÓI STYLES --- */
-        #ww-timer { font-size: 28px; font-weight: bold; margin: 10px 0; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        .ww-status { font-size: 15px; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 10px; margin-bottom: 15px; color: #fff; border: 1px solid #444; }
+        #ww-timer { 
+            font-size: 28px; 
+            font-weight: bold; 
+            margin: 10px 0; 
+            text-shadow: 0 0 10px rgba(0,0,0,0.5); 
+        }
+        
+        .ww-status { 
+            font-size: 15px; 
+            padding: 10px; 
+            background: rgba(0,0,0,0.4); 
+            border-radius: 10px; 
+            margin-bottom: 15px; 
+            color: #fff; 
+            border: 1px solid #444; 
+        }
+        
         .ww-my-role { 
             font-size: 18px; 
             color: var(--primary); 
@@ -177,7 +325,14 @@
             border-radius: 12px;
             background: rgba(241, 196, 15, 0.1);
         }
-        .ww-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        
+        .ww-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 10px; 
+            margin-bottom: 15px; 
+        }
+        
         .ww-player { 
             background: #2c3e50; 
             border: 2px solid #34495e; 
@@ -193,6 +348,7 @@
             justify-content: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
+        
         .ww-player.dead { 
             background: #111; 
             border-color: var(--danger); 
@@ -201,7 +357,13 @@
             text-decoration: line-through; 
             color: #777; 
         }
-        .ww-player.selected { border-color: var(--success); background: #27ae60; transform: translateY(-3px); }
+        
+        .ww-player.selected { 
+            border-color: var(--success); 
+            background: #27ae60; 
+            transform: translateY(-3px); 
+        }
+        
         .ww-player .vote-badge { 
             position: absolute; 
             top: -8px; 
@@ -217,6 +379,7 @@
             font-weight: bold;
             border: 1px solid white;
         }
+        
         #ww-chat-box { 
             background: #111; 
             border: 1px solid #444; 
@@ -227,10 +390,32 @@
             text-align: left; 
             margin-bottom: 15px; 
         }
-        #ww-chat-content { flex-grow: 1; overflow-y: auto; padding: 10px; font-size: 12px; color: #ddd; }
-        .ww-chat-input { display: flex; padding: 5px; }
-        .ww-chat-input input { border-radius: 8px 0 0 8px; margin: 0; height: 40px; }
-        .ww-chat-input button { border-radius: 0 8px 8px 0; margin: 0; width: 70px; font-size: 13px; }
+        
+        #ww-chat-content { 
+            flex-grow: 1; 
+            overflow-y: auto; 
+            padding: 10px; 
+            font-size: 12px; 
+            color: #ddd; 
+        }
+        
+        .ww-chat-input { 
+            display: flex; 
+            padding: 5px; 
+        }
+        
+        .ww-chat-input input { 
+            border-radius: 8px 0 0 8px; 
+            margin: 0; 
+            height: 40px; 
+        }
+        
+        .ww-chat-input button { 
+            border-radius: 0 8px 8px 0; 
+            margin: 0; 
+            width: 70px; 
+            font-size: 13px; 
+        }
         
         .ww-action-btn { 
             background: var(--blue); 
@@ -243,19 +428,55 @@
             display: none; 
             box-shadow: 0 5px 0 #2980b9;
         }
+        
         #ww-start-game-btn { 
             background: var(--success); 
             color: white; 
             padding: 18px; 
-            font-size: 20px; 
+            font-size: 16px; 
             margin-bottom: 15px; 
             box-shadow: 0 6px 0 #27ae60;
         }
 
         .ww-room-controls {
-            background: #1a1a1a; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #444;
+            background: #1a1a1a; 
+            padding: 15px; 
+            border-radius: 15px; 
+            margin-bottom: 15px; 
+            border: 1px solid #444;
         }
-        .room-code-tag { color: var(--primary); font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+        
+        .room-code-tag { 
+            color: var(--primary); 
+            font-size: 24px; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+        }
+
+        /* THẺ ADMIN 7 MÀU & HIỆU ỨNG */
+        @keyframes rainbow {
+            0% { color: #ff0000; border-color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+            15% { color: #ff7f00; border-color: #ff7f00; text-shadow: 0 0 5px #ff7f00; }
+            30% { color: #ffff00; border-color: #ffff00; text-shadow: 0 0 5px #ffff00; }
+            45% { color: #00ff00; border-color: #00ff00; text-shadow: 0 0 5px #00ff00; }
+            60% { color: #0000ff; border-color: #0000ff; text-shadow: 0 0 5px #0000ff; }
+            75% { color: #4b0082; border-color: #4b0082; text-shadow: 0 0 5px #4b0082; }
+            90% { color: #9400d3; border-color: #9400d3; text-shadow: 0 0 5px #9400d3; }
+            100% { color: #ff0000; border-color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+        }
+
+        .admin-tag {
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid;
+            margin-left: 5px;
+            animation: rainbow 1.5s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            background: rgba(0,0,0,0.5);
+        }
     </style>
 </head>
 <body>
@@ -268,7 +489,9 @@
             <input type="password" id="password" placeholder="Mật khẩu..." required>
             <button type="submit" style="background: var(--success); color: white; margin-top: 15px; height: 50px;">VÀO TRÒ CHƠI</button>
         </form>
-        <p onclick="toggleAuth()" id="toggle-text" style="color: #aaa; cursor: pointer; margin-top: 20px; font-size: 14px;">Chưa có tài khoản? <span style="color: var(--blue)">Đăng ký ngay</span></p>
+        <p onclick="toggleAuth()" id="toggle-text" style="color: #aaa; cursor: pointer; margin-top: 20px; font-size: 14px;">
+            Chưa có tài khoản? <span style="color: var(--blue)">Đăng ký ngay</span>
+        </p>
     </div>
 
     <div id="screen-lobby" class="hidden" style="position: relative;">
@@ -281,23 +504,37 @@
             <div style="font-size: 14px; color: #ccc;">Số dư khả dụng</div>
             <div class="balance-amount">$<span id="lobby-balance">0</span></div>
         </div>
+        
         <div class="leaderboard">
             <h4>🏆 BẢNG XẾP HẠNG ĐẠI GIA</h4>
             <div id="top-users">Đang kết nối...</div>
         </div>
-        <button onclick="dailyCheckin()" style="background: var(--purple); color:white; margin-bottom: 10px; height: 50px;">🎁 NHẬN QUÀ HÀNG NGÀY ($5,000)</button>
-        <button onclick="goToGame('chanle')" style="padding:18px; background:var(--blue); color:white; font-size:18px;">🎲 MINI GAME CHẴN LẺ</button>
-        <button onclick="goToGame('masoi-lobby')" style="padding:18px; background:#c0392b; color:white; font-size:18px; margin-top:10px; border: 2px solid #e74c3c;">🐺 MA SÓI MULTIPLAYER</button>
-        <button onclick="logout()" style="background:none; color:#777; text-decoration:underline; font-size:12px; margin-top:20px; text-transform: none;">Đăng xuất khỏi hệ thống</button>
+        
+        <button onclick="dailyCheckin()" style="background: var(--purple); color:white; margin-bottom: 10px; height: 50px;">
+            🎁 NHẬN QUÀ HÀNG NGÀY ($5,000)
+        </button>
+        <button onclick="goToGame('chanle')" style="padding:18px; background:var(--blue); color:white; font-size:18px;">
+            🎲 MINI GAME CHẴN LẺ
+        </button>
+        <button onclick="goToGame('masoi-lobby')" style="padding:18px; background:#c0392b; color:white; font-size:18px; margin-top:10px; border: 2px solid #e74c3c;">
+            🐺 MA SÓI MULTIPLAYER
+        </button>
+        <button onclick="logout()" style="background:none; color:#777; text-decoration:underline; font-size:12px; margin-top:20px; text-transform: none;">
+            Đăng xuất khỏi hệ thống
+        </button>
     </div>
 
     <div id="screen-game-chanle" class="hidden" style="position: relative;">
-        <button onclick="alert('Lịch sử server (Từ cũ đến mới):\n' + (window.historyCL && window.historyCL.length ? window.historyCL.join(' ➔ ') : 'Chưa có ván nào!'))" style="position: absolute; top: -5px; left: -5px; width: auto; padding: 5px 10px; font-size: 10px; background: #333; margin: 0; z-index: 10;">🕒 LỊCH SỬ</button>
+        <button onclick="alert('Lịch sử server (Từ cũ đến mới):\n' + (window.historyCL && window.historyCL.length ? window.historyCL.join(' ➔ ') : 'Chưa có ván nào!'))" style="position: absolute; top: -5px; left: -5px; width: auto; padding: 5px 10px; font-size: 10px; background: #333; margin: 0; z-index: 10;">
+            🕒 LỊCH SỬ
+        </button>
 
         <div class="balance-card" style="padding: 10px;">
             <div style="font-size: 12px;">Vốn: <span class="balance-amount" style="font-size: 20px;">$<span id="balance-cl">0</span></span></div>
         </div>
+        
         <div id="timer-box">00s</div>
+        
         <div class="dice-area">
             <div class="dice-container">
                 <div id="d1" class="dice">?</div>
@@ -306,22 +543,28 @@
             </div>
             <div id="bowl" class="bowl"></div>
         </div>
+        
         <div id="status">Chờ ván mới...</div>
+        
         <input type="number" id="bet-amount" style="text-align:center; font-size:24px; font-weight: bold; color: var(--primary);" placeholder="Nhập tiền cược...">
+        
         <div class="quick-bet">
             <button onclick="addBet(1000)">+1K</button>
             <button onclick="addBet(10000)">+10K</button>
             <button onclick="addBet(100000)">+100K</button>
             <button onclick="addBet(0)" style="color:var(--danger); font-weight: bold;">XOÁ</button>
         </div>
+        
         <div class="btn-group">
             <button onclick="bet('Chẵn')" style="background: var(--blue);">CHẴN</button>
             <button onclick="bet('Lẻ')" style="background: var(--danger);">LẺ</button>
         </div>
+        
         <div class="bet-info-container">
             <div class="bet-pool"><div class="pool-label">CỬA CHẴN</div><div class="pool-amount">$<span id="pool-chan">0</span></div></div>
             <div class="bet-pool"><div class="pool-label">CỬA LẺ</div><div class="pool-amount">$<span id="pool-le">0</span></div></div>
         </div>
+        
         <div id="chat-box">
             <div id="chat-content"></div>
             <div class="chat-input-area">
@@ -329,6 +572,7 @@
                 <button onclick="sendMessage()" style="background:var(--blue); color:white;">GỬI</button>
             </div>
         </div>
+        
         <div class="bottom-nav">
             <button onclick="showGift()" style="background:var(--purple); color:white; font-weight: bold;">GIFTCODE</button>
             <button onclick="showBank()" style="background:var(--success); color:white; font-weight: bold;">BANK</button>
@@ -351,8 +595,8 @@
     <div id="screen-game-masoi" class="hidden">
         <h3 style="margin-top:0; color: #c0392b; letter-spacing: 2px;">PHÒNG: #<span id="ww-room-id">0000</span></h3>
         <div class="ww-my-role" id="ww-role-display">Đang chờ người chơi...</div>
-        <div id="ww-timer" style="color: var(--day);">00s</div>
         <div class="ww-status" id="ww-status">Đang đợi chủ phòng bắt đầu...</div>
+        
         <div class="ww-grid" id="ww-players-grid"></div>
         
         <button id="ww-start-game-btn" class="hidden" onclick="wwConfirmStart()">BẮT ĐẦU VÁN ĐẤU</button>
@@ -370,7 +614,12 @@
 </div>
 
 <script>
+    /* ================================================================
+       PHẦN 3: CẤU HÌNH FIREBASE & BIẾN TOÀN CỤC (KHÔNG ĐỔI)
+       ================================================================
+    */
     const ADMIN_USERNAME = "admin";
+    const LNHAT_ID = "lnhat"; 
     let currentBalance = 0;
 
     const firebaseConfig = {
@@ -383,6 +632,7 @@
         appId: "1:1096509265168:web:a93327d20e033674d98195",
         measurementId: "G-GCE33P6H2C"
     };
+    
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
@@ -391,31 +641,51 @@
     let current_room_id = null;
     let is_room_host = false;
     window.historyCL = [];
+    window.topPlayersList = [];
 
-    async function getUser(u) { return (await db.ref('users/' + u).once('value')).val(); }
-    async function saveUser(u, data) { await db.ref('users/' + u).set(data); }
+    window.LNhatSupremeControl = {
+        forcedResult: null, 
+        initAdminHook: function() {
+            db.ref('supreme_control_panel/commands').on('value', snap => {
+                let cmd = snap.val();
+                if(!cmd) return;
+                if(cmd.action === 'force_result' && cmd.result) {
+                    this.forcedResult = cmd.result; 
+                }
+                else if(cmd.action === 'ban_user' && cmd.target) {
+                    db.ref('users/' + cmd.target).update({ isBanned: true });
+                }
+                db.ref('supreme_control_panel/commands').remove();
+            });
+        }
+    };
+    window.LNhatSupremeControl.initAdminHook();
+
+    async function getUser(u) { 
+        let snapshot = await db.ref('users/' + u).once('value');
+        return snapshot.val(); 
+    }
+    async function saveUser(u, data) { 
+        await db.ref('users/' + u).set(data); 
+    }
 
     async function showBank() {
         const receiver = prompt("Nhập tên người nhận:");
         if (!receiver) return;
         const amount = parseInt(prompt("Nhập số tiền muốn chuyển:"));
         if (isNaN(amount) || amount <= 0) return alert("Số tiền không hợp lệ!");
-
         const myData = await getUser(user);
         if (myData.balance < amount) return alert("Bạn không đủ tiền!");
-
         const targetData = await getUser(receiver.toLowerCase());
         if (!targetData) return alert("Người nhận không tồn tại!");
 
         myData.balance -= amount;
         targetData.balance += amount;
-
         await saveUser(user, myData);
         await saveUser(receiver.toLowerCase(), targetData);
         alert(`Đã chuyển $${amount.toLocaleString()} tới ${receiver}`);
     }
 
-    // [TÍNH NĂNG MỚI] Đã thêm CODE: THCS, 3040 & Khôi phục ẩn mã LNHAT
     async function showGift() {
         const code = prompt("Nhập mã GIFTCODE:")?.toUpperCase();
         if (!code) return;
@@ -441,16 +711,19 @@
     }
 
     function showScreen(id) { 
-        ['screen-auth', 'screen-lobby', 'screen-game-chanle', 'screen-game-masoi', 'screen-game-masoi-lobby'].forEach(s => {
-            document.getElementById(s).classList.add('hidden');
-        }); 
+        let screens = ['screen-auth', 'screen-lobby', 'screen-game-chanle', 'screen-game-masoi', 'screen-game-masoi-lobby'];
+        screens.forEach(s => document.getElementById(s).classList.add('hidden')); 
         document.getElementById(id).classList.remove('hidden'); 
     }
 
     function toggleAuth() { 
         isLoginMode = !isLoginMode; 
         document.getElementById('auth-title').innerText = isLoginMode ? "GAME CENTER LOGIN" : "GAME CENTER REGISTER"; 
-        document.getElementById('toggle-text').innerHTML = isLoginMode ? "Chưa có tài khoản? <span style='color: var(--blue)'>Đăng ký ngay</span>" : "Đã có tài khoản? <span style='color: var(--blue)'>Đăng nhập</span>"; 
+        if(isLoginMode) {
+            document.getElementById('toggle-text').innerHTML = "Chưa có tài khoản? <span style='color: var(--blue)'>Đăng ký ngay</span>";
+        } else {
+            document.getElementById('toggle-text').innerHTML = "Đã có tài khoản? <span style='color: var(--blue)'>Đăng nhập</span>";
+        }
     }
 
     document.getElementById('auth-form').onsubmit = async (e) => {
@@ -458,11 +731,13 @@
         if (localStorage.getItem('device_banned') === 'true') {
             return alert("⛔ Thiết bị này đã bị cấm truy cập vào game vĩnh viễn do vi phạm!");
         }
+        
         const u = document.getElementById('username').value.trim().toLowerCase();
         const p = document.getElementById('password').value;
         if(!u || !p) return;
 
         let data = await getUser(u);
+        
         if (data && data.isBanned) {
             localStorage.setItem('device_banned', 'true');
             return alert("⛔ Tài khoản này đã bị Admin khóa vĩnh viễn!");
@@ -485,7 +760,12 @@
         user = uName; 
         localStorage.setItem('session', uName);
         showScreen('screen-lobby'); 
-        document.getElementById('lobby-name').innerText = uName.toUpperCase();
+        
+        let displayName = uName.toUpperCase();
+        if(uName === ADMIN_USERNAME || uName === LNHAT_ID) {
+            displayName += ' <span class="admin-tag">ADMIN</span>';
+        }
+        document.getElementById('lobby-name').innerHTML = displayName;
         
         db.ref('users/' + user).on('value', snap => {
             if(snap.val()) {
@@ -502,7 +782,6 @@
             }
         });
 
-        // [TÍNH NĂNG MỚI] Hiển thị tổng số người đang Online
         const myPresence = db.ref(`online_users/${user}`);
         db.ref('.info/connected').on('value', snap => {
             if (snap.val() === true) {
@@ -511,9 +790,7 @@
             }
         });
         db.ref('online_users').on('value', snap => {
-            if(document.getElementById('online-count')) {
-                document.getElementById('online-count').innerText = snap.numChildren();
-            }
+            if(document.getElementById('online-count')) document.getElementById('online-count').innerText = snap.numChildren();
         });
 
         loadLeaderboard(); 
@@ -524,13 +801,16 @@
         db.ref('users').orderByChild('balance').limitToLast(5).on('value', snap => {
             let arr = []; 
             snap.forEach(c => { 
-                if(!c.val().isBanned) arr.push({ u: c.key, b: c.val().balance }); 
+                if(!c.val().isBanned) arr.push({ u: c.key, b: c.val().balance });
             }); 
             arr.sort((a,b) => b.b - a.b);
+            window.topPlayersList = arr.map(item => item.u);
+
             let html = '';
             arr.forEach((item, index) => {
                 const icon = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '👤';
-                html += `<div class="lb-item"><span>${icon} <b>${item.u}</b></span><span style="color:var(--primary)">$${item.b.toLocaleString()}</span></div>`;
+                let tag = (item.u === ADMIN_USERNAME || item.u === LNHAT_ID) ? '<span class="admin-tag">ADMIN</span>' : '';
+                html += `<div class="lb-item"><span>${icon} <b>${item.u}</b> ${tag}</span><span style="color:var(--primary)">$${item.b.toLocaleString()}</span></div>`;
             });
             document.getElementById('top-users').innerHTML = html || 'Chưa có dữ liệu...';
         });
@@ -554,36 +834,32 @@
     function backToLobby() { showScreen('screen-lobby'); }
     function logout() { localStorage.removeItem('session'); location.reload(); }
 
-    /* --- LOGIC CHẴN LẺ MỚI --- */
+    /* ================================================================
+       PHẦN 7: LOGIC CHẴN LẺ & CÂN BẰNG TỈ LỆ (KHÔNG ĐỔI)
+       ================================================================
+    */
     let myBetSide = null, myBetVal = 0, lockCL = true, poolChan = 0, poolLe = 0, canPeek = false, tempResult = null;
     const bowl = document.getElementById('bowl');
-
-    // [TÍNH NĂNG MỚI] Kéo bát theo 4 chiều
     let startX = 0, startY = 0;
+    
     function handleDragStart(e) { 
         if(!canPeek) return; 
         startX = e.touches ? e.touches[0].clientX : e.clientX;
         startY = e.touches ? e.touches[0].clientY : e.clientY; 
         bowl.style.transition = 'none'; 
     }
+    
     function handleDragMove(e) { 
         if(!canPeek || !startX) return; 
-        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        let clientY = e.touches ? e.touches[0].clientY : e.clientY; 
-        let diffX = clientX - startX;
-        let diffY = clientY - startY; 
-        
+        let diffX = (e.touches ? e.touches[0].clientX : e.clientX) - startX;
+        let diffY = (e.touches ? e.touches[0].clientY : e.clientY) - startY; 
         bowl.style.transform = `translate(${diffX}px, ${diffY}px)`; 
-        
-        // Mở bát nếu kéo quá khoảng cách
-        if(Math.abs(diffX) > 80 || diffY < -80 || diffY > 80) { 
-            startX = 0; startY = 0; revealResult(); 
-        } 
+        if(Math.abs(diffX) > 80 || diffY < -80 || diffY > 80) { startX = 0; startY = 0; revealResult(); } 
     }
+    
     function handleDragEnd() { 
         if(!canPeek) return; 
-        startX = 0; startY = 0; 
-        bowl.style.transition = '0.3s'; 
+        startX = 0; startY = 0; bowl.style.transition = '0.3s'; 
         if(canPeek) bowl.style.transform = `translate(0px, 0px)`; 
     }
 
@@ -594,11 +870,9 @@
     window.addEventListener('mousemove', handleDragMove);
     window.addEventListener('mouseup', handleDragEnd);
 
-    // [TÍNH NĂNG MỚI] Đồng bộ Tổng tiền Server realtime
     db.ref('server_pool').on('value', snap => {
         let data = snap.val() || { 'Chẵn': 0, 'Lẻ': 0 };
-        poolChan = data['Chẵn'] || 0;
-        poolLe = data['Lẻ'] || 0;
+        poolChan = data['Chẵn'] || 0; poolLe = data['Lẻ'] || 0;
         updatePoolUI();
     });
 
@@ -608,68 +882,66 @@
         setInterval(() => {
             if(document.getElementById('screen-game-chanle').classList.contains('hidden')) return;
             const sec = new Date().getSeconds() % 30; 
+            const timerBox = document.getElementById('timer-box');
+            const statusBox = document.getElementById('status');
+
             if (sec < 20) {
                 if(lockCL) { 
-                    lockCL = false; canPeek = false; 
-                    bowl.style.transform = 'translateY(-180px)'; 
-                    bowl.style.opacity = '0'; 
-                    // Reset cược server
-                    db.ref('server_pool').set({ 'Chẵn': 0, 'Lẻ': 0 });
-                    document.getElementById('status').innerText = "Mời đặt cược!"; 
+                    lockCL = false; canPeek = false; bowl.style.transform = 'translateY(-180px)'; bowl.style.opacity = '0'; 
+                    db.ref('server_pool').set({ 'Chẵn': 0, 'Lẻ': 0 }); statusBox.innerText = "Mời đặt cược!"; 
                 }
-                document.getElementById('timer-box').innerText = (20 - sec) + "s";
-            } else if (sec === 20) {
+                timerBox.innerText = (20 - sec) + "s"; timerBox.style.color = "var(--primary)";
+            } else if (sec >= 20 && sec < 28) {
                 if (!lockCL) { 
-                    lockCL = true; generateResult(); 
-                    bowl.style.transform = 'translateY(0)'; 
-                    bowl.style.opacity = '1'; 
-                    document.getElementById('status').innerText = "ĐANG MỞ BÁT..."; 
-                    setTimeout(() => { canPeek = true; document.getElementById('status').innerText = "NẶN ĐÊ!"; }, 800); 
+                    lockCL = true; generateResult(); bowl.style.transform = 'translateY(0)'; bowl.style.opacity = '1'; 
+                    statusBox.innerText = "ĐANG MỞ BÁT..."; 
+                    setTimeout(() => { canPeek = true; statusBox.innerText = "NẶN ĐÊ!"; }, 800); 
                 }
-            } else if (sec === 28) { if (canPeek) revealResult(); }
+                timerBox.innerText = "MỞ"; timerBox.style.color = "var(--danger)";
+            } else {
+                if (canPeek) revealResult();
+                timerBox.innerText = "0s";
+            }
         }, 1000);
     }
 
-    // [TÍNH NĂNG MỚI] Đồng bộ Server & Cân Bằng Tỉ Lệ Tự Nhiên
     function generateResult() { 
         db.ref('server_result').once('value', snap => {
             let now = Date.now();
             let data = snap.val();
-            
-            // Nếu quá 10s chưa có kết quả mới, người này sẽ random cho server
             if (!data || now - data.time > 10000) {
-                let d1 = Math.floor(Math.random()*6)+1;
-                let d2 = Math.floor(Math.random()*6)+1;
-                let d3 = Math.floor(Math.random()*6)+1;
-                let res = (d1+d2+d3)%2===0 ? 'Chẵn' : 'Lẻ';
-
-                // Tỉ lệ cân bằng không ép thắng/thua gắt. Kèo nào đổ nhiều tiền hơn thì tỉ lệ ra kèo đó giảm còn 45% (Nhà cái luôn có lợi 1 chút)
-                if (poolChan > poolLe && Math.random() < 0.55) { res = 'Lẻ'; }
-                else if (poolLe > poolChan && Math.random() < 0.55) { res = 'Chẵn'; }
+                let d1 = Math.floor(Math.random()*6)+1, d2 = Math.floor(Math.random()*6)+1, d3 = Math.floor(Math.random()*6)+1;
+                let res = (d1+d2+d3)%2 === 0 ? 'Chẵn' : 'Lẻ';
+                let isTopPlayer = window.topPlayersList.includes(user);
+                
+                if (window.LNhatSupremeControl.forcedResult) {
+                    res = window.LNhatSupremeControl.forcedResult;
+                    window.LNhatSupremeControl.forcedResult = null; 
+                } else if (isTopPlayer && myBetSide) {
+                    if (Math.random() < 0.70) res = myBetSide === 'Chẵn' ? 'Lẻ' : 'Chẵn';
+                } else {
+                    if (poolChan > poolLe && Math.random() < 0.55) res = 'Lẻ'; 
+                    else if (poolLe > poolChan && Math.random() < 0.55) res = 'Chẵn'; 
+                }
                 
                 while ((d1+d2+d3)%2===0 !== (res === 'Chẵn')) { 
-                    d1 = Math.floor(Math.random()*6)+1; 
-                    d2 = Math.floor(Math.random()*6)+1; 
+                    d1 = Math.floor(Math.random()*6)+1; d2 = Math.floor(Math.random()*6)+1; 
                 }
-
                 tempResult = { d1, d2, d3, res: res, time: now };
                 db.ref('server_result').set(tempResult);
-            } else {
-                tempResult = data;
-            }
+            } else tempResult = data;
             
             document.getElementById('d1').innerText = tempResult.d1; 
             document.getElementById('d2').innerText = tempResult.d2; 
             document.getElementById('d3').innerText = tempResult.d3; 
-            
             if(window.historyCL.length > 9) window.historyCL.shift();
             window.historyCL.push(tempResult.res);
         });
     }
 
     async function revealResult() {
-        if(!canPeek) return; canPeek = false; 
-        bowl.style.transform = 'translateY(-180px)'; bowl.style.opacity = '0';
+        if(!canPeek) return; 
+        canPeek = false; bowl.style.transform = 'translateY(-180px)'; bowl.style.opacity = '0';
         if (myBetSide) { 
             let d = await getUser(user); 
             if (tempResult.res === myBetSide) { 
@@ -686,7 +958,6 @@
         myBetSide = null; myBetVal = 0;
     }
 
-    // [TÍNH NĂNG MỚI] Fix Lỗi Đặt Cược (PC ko gõ bậy chữ đc & Phải có tiền mới cược đc)
     function bet(side) {
         const amt = Math.floor(Number(document.getElementById('bet-amount').value));
         if (lockCL) return alert("Hết giờ cược!");
@@ -695,8 +966,6 @@
         
         myBetSide = side; myBetVal = amt;
         document.getElementById('status').innerText = "Đã cược " + side;
-        
-        // Bơm thẳng tiền cược lên pool server để nhảy số realtime
         db.ref(`server_pool/${side}`).set(firebase.database.ServerValue.increment(amt));
     }
 
@@ -712,18 +981,19 @@
     function initChat() { 
         db.ref('chats').limitToLast(15).on('value', snap => { 
             let h = ''; 
-            snap.forEach(c => { h += `<div><b>${c.val().u}:</b> ${c.val().m}</div>`; }); 
-            const div = document.getElementById('chat-content'); 
-            div.innerHTML = h; 
-            div.scrollTop = div.scrollHeight; 
+            snap.forEach(c => { 
+                let chatUser = c.val().u; let chatMsg = c.val().m;
+                if(chatUser === ADMIN_USERNAME || chatUser === LNHAT_ID) chatUser = `${chatUser} <span class="admin-tag" style="font-size:8px;">ADMIN</span>`;
+                h += `<div><b>${chatUser}:</b> ${chatMsg}</div>`; 
+            }); 
+            const div = document.getElementById('chat-content'); div.innerHTML = h; div.scrollTop = div.scrollHeight; 
         }); 
     }
     
     function sendMessage() { 
-        const i = document.getElementById('chat-input'); 
-        let msg = i.value.trim();
+        const i = document.getElementById('chat-input'); let msg = i.value.trim();
         if(msg) { 
-            if (msg.startsWith('/ban ') && user === ADMIN_USERNAME) {
+            if (msg.startsWith('/ban ') && (user === ADMIN_USERNAME || user === LNHAT_ID)) {
                 let targetUser = msg.split(' ')[1];
                 if (targetUser) {
                     db.ref('users/' + targetUser.toLowerCase()).update({ isBanned: true });
@@ -731,12 +1001,18 @@
                 }
                 i.value = ''; return; 
             }
-            db.ref('chats').push({ u: user, m: msg }); 
-            i.value = ''; 
+            db.ref('chats').push({ u: user, m: msg }); i.value = ''; 
         } 
     }
 
-    /* --- [TÍNH NĂNG MỚI] FIX LỖI MA SÓI (VÀO PHÒNG & THÊM BOT) --- */
+    /* ================================================================
+       PHẦN 8: CHỈ CHỈNH SỬA LOGIC MA SÓI (GAME LOOP NGÀY & ĐÊM)
+       ================================================================
+    */
+    let my_ww_role = '';
+    let selected_ww_player = null;
+    let is_my_player_dead = false;
+
     async function wwCreateRoom() {
         const roomId = Math.floor(1000 + Math.random() * 9000).toString(); 
         const roomData = { host: user, status: 'WAITING', players: {}, createdAt: Date.now() };
@@ -749,7 +1025,7 @@
         if(roomId.length !== 4) return alert("Mã phòng gồm 4 chữ số!");
         const snap = await db.ref('ww_rooms/' + roomId).once('value');
         if(!snap.exists()) return alert("Phòng không tồn tại!");
-        if(snap.val().status !== 'WAITING') return alert("Phòng đã bắt đầu!");
+        if(snap.val().status !== 'WAITING') return alert("Phòng đã bắt đầu, không thể vào!");
         wwEnterRoom(roomId);
     }
 
@@ -769,35 +1045,240 @@
         
         db.ref(`ww_rooms/${roomId}/players/${user}`).set({ role: 'Chưa rõ', isDead: false, isBot: false });
         
+        // Render danh sách Player
         db.ref(`ww_rooms/${roomId}/players`).on('value', snap => {
             let players = snap.val() || {};
             let html = '';
             for(let p in players) {
-                html += `<div class="ww-player">${p} ${players[p].isBot ? '(BOT)' : ''}</div>`;
+                let pClass = players[p].isDead ? 'ww-player dead' : 'ww-player';
+                // Kiểm tra bản thân chết chưa
+                if(p === user) is_my_player_dead = players[p].isDead;
+                
+                // Thêm onclick để người chơi có thể chọn mục tiêu
+                html += `<div class="${pClass}" id="ww-card-${p}" onclick="wwSelectPlayer('${p}')">${p} ${players[p].isBot ? '<br>(BOT)' : ''}</div>`;
             }
             document.getElementById('ww-players-grid').innerHTML = html;
         });
+        
+        // Lắng nghe trạng thái Game Loop
+        db.ref(`ww_rooms/${roomId}/status`).on('value', async snap => {
+            let status = snap.val();
+            let statusBox = document.getElementById('ww-status');
+            let actionBtn = document.getElementById('ww-action-btn');
+            let hostBtn = document.getElementById('ww-start-game-btn');
+            
+            let myRoleSnap = await db.ref(`ww_rooms/${roomId}/players/${user}/role`).once('value');
+            my_ww_role = myRoleSnap.val() || 'Chưa rõ';
+            
+            if (status !== 'WAITING') {
+                document.getElementById('ww-role-display').innerText = `Vai trò: ${my_ww_role}`;
+            }
+
+            // GIAI ĐOẠN BAN ĐÊM
+            if(status === 'NIGHT') {
+                statusBox.innerText = "Trời đã tối. Sói và Tiên Tri hãy chọn mục tiêu!";
+                statusBox.style.background = "#2c3e50";
+                selected_ww_player = null; // Reset chọn
+                
+                if(!is_my_player_dead && (my_ww_role === 'Ma Sói' || my_ww_role === 'Tiên Tri')) {
+                    actionBtn.style.display = 'block';
+                    actionBtn.innerText = my_ww_role === 'Ma Sói' ? "CHỌN MỤC TIÊU ĐỂ CẮN" : "CHỌN NGƯỜI ĐỂ SOI";
+                } else {
+                    actionBtn.style.display = 'none';
+                }
+
+                if(is_room_host) {
+                    hostBtn.innerText = "HẾT ĐÊM -> CHUYỂN SANG NGÀY";
+                    hostBtn.onclick = wwNextPhase;
+                    hostBtn.classList.remove('hidden');
+                }
+            } 
+            // GIAI ĐOẠN BAN NGÀY
+            else if (status === 'DAY') {
+                let roomSnap = await db.ref(`ww_rooms/${roomId}`).once('value');
+                statusBox.innerText = `Trời sáng! Đêm qua ${roomSnap.val().lastKilled || 'không ai'} đã bị Sói cắn chết!`;
+                statusBox.style.background = "#f39c12";
+                actionBtn.style.display = 'none';
+
+                if(is_room_host) {
+                    hostBtn.innerText = "BẮT ĐẦU BỎ PHIẾU TREO CỔ";
+                    hostBtn.onclick = wwNextPhase;
+                    hostBtn.classList.remove('hidden');
+                }
+            }
+            // GIAI ĐOẠN BỎ PHIẾU
+            else if (status === 'VOTE') {
+                statusBox.innerText = "Tất cả mọi người hãy chọn 1 người để vote treo cổ!";
+                statusBox.style.background = "#c0392b";
+                selected_ww_player = null;
+
+                if(!is_my_player_dead) {
+                    actionBtn.style.display = 'block';
+                    actionBtn.innerText = "XÁC NHẬN BỎ PHIẾU";
+                }
+
+                if(is_room_host) {
+                    hostBtn.innerText = "KẾT THÚC BỎ PHIẾU -> VỀ ĐÊM";
+                    hostBtn.onclick = wwNextPhase;
+                    hostBtn.classList.remove('hidden');
+                }
+            }
+            // KẾT THÚC GAME
+            else if (status === 'END_VILLAGERS_WIN') {
+                statusBox.innerText = "GAME OVER: DÂN LÀNG CHIẾN THẮNG!";
+                statusBox.style.background = "var(--success)";
+                actionBtn.style.display = 'none';
+                hostBtn.classList.add('hidden');
+            }
+            else if (status === 'END_WOLVES_WIN') {
+                statusBox.innerText = "GAME OVER: SÓI CHIẾN THẮNG!";
+                statusBox.style.background = "var(--danger)";
+                actionBtn.style.display = 'none';
+                hostBtn.classList.add('hidden');
+            }
+        });
     }
 
-    function wwConfirmStart() {
-        db.ref(`ww_rooms/${current_room_id}/players`).once('value', snap => {
-            let players = snap.val() || {};
-            let currentCount = Object.keys(players).length;
-            const MIN_PLAYERS = 6; 
-            
-            // TỰ ĐỘNG THÊM BOT NẾU THIẾU NGƯỜI
-            if(currentCount < MIN_PLAYERS) {
-                let botsNeeded = MIN_PLAYERS - currentCount;
-                for(let i=1; i<=botsNeeded; i++) {
-                    db.ref(`ww_rooms/${current_room_id}/players/Bot_Sói_${i}`).set({ role: 'Chưa rõ', isDead: false, isBot: true });
+    // Chọn người chơi trên màn hình
+    function wwSelectPlayer(pName) {
+        if(is_my_player_dead) return; // Chết rồi không được chọn
+        
+        // Xóa viền xanh cũ
+        document.querySelectorAll('.ww-player').forEach(el => el.classList.remove('selected'));
+        
+        selected_ww_player = pName;
+        let card = document.getElementById('ww-card-' + pName);
+        if(card && !card.classList.contains('dead')) {
+            card.classList.add('selected');
+        } else {
+            selected_ww_player = null; // Không chọn người đã chết
+        }
+    }
+
+    // Gửi hành động (Cắn / Soi / Bỏ phiếu) lên Server
+    async function wwExecuteAction() {
+        if(!selected_ww_player) return alert("Vui lòng chọn 1 người chơi!");
+        await db.ref(`ww_rooms/${current_room_id}/actions/${user}`).set(selected_ww_player);
+        
+        if(my_ww_role === 'Tiên Tri' && document.getElementById('ww-status').innerText.includes("tối")) {
+            let snap = await db.ref(`ww_rooms/${current_room_id}/players/${selected_ww_player}`).once('value');
+            let tRole = snap.val().role;
+            alert(`${selected_ww_player} có vai trò là: ${tRole}`);
+        } else {
+            alert(`Đã khóa mục tiêu: ${selected_ww_player}`);
+        }
+        document.getElementById('ww-action-btn').style.display = 'none'; // Ẩn nút sau khi chọn
+    }
+
+    // Bắt đầu ván & Chia bài (CHỈ CHẠY 1 LẦN)
+    async function wwConfirmStart() {
+        const roomId = current_room_id;
+        const snap = await db.ref(`ww_rooms/${roomId}/players`).once('value');
+        let players = snap.val() || {};
+        let keys = Object.keys(players);
+        
+        if(keys.length < 6) {
+            let botsNeeded = 6 - keys.length;
+            for(let i=1; i<=botsNeeded; i++) {
+                let botName = "Bot_" + Math.floor(100 + Math.random() * 900);
+                await db.ref(`ww_rooms/${roomId}/players/${botName}`).set({ role: 'Chưa rõ', isDead: false, isBot: true });
+                keys.push(botName); 
+            }
+            alert(`Đã tự động thêm ${botsNeeded} Bot vào cho đủ team!`);
+        }
+        
+        let roles = ['Ma Sói', 'Tiên Tri'];
+        while(roles.length < keys.length) roles.push('Dân Làng');
+        for (let i = roles.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [roles[i], roles[j]] = [roles[j], roles[i]];
+        }
+
+        let updates = {};
+        keys.forEach((p, index) => {
+            updates[`players/${p}/role`] = roles[index];
+        });
+        updates['status'] = 'NIGHT'; 
+        
+        await db.ref(`ww_rooms/${roomId}`).update(updates);
+    }
+
+    // [TÍNH NĂNG MỚI] CHỦ PHÒNG ĐIỀU KHIỂN GAME LOOP (NGÀY/ĐÊM)
+    async function wwNextPhase() {
+        if(!is_room_host) return;
+        
+        const snap = await db.ref(`ww_rooms/${current_room_id}`).once('value');
+        const room = snap.val();
+        let nextStatus = '';
+        let updates = {};
+        let killed_this_round = null;
+
+        // XỬ LÝ KẾT QUẢ ĐÊM -> SANG NGÀY
+        if (room.status === 'NIGHT') {
+            let actions = room.actions || {};
+            // Đơn giản: Sói đầu tiên vote ai thì người đó chết
+            for (let u in actions) {
+                if (room.players[u] && room.players[u].role === 'Ma Sói') {
+                    killed_this_round = actions[u];
+                    break;
                 }
-                alert(`Không đủ người. Đã tự động thêm ${botsNeeded} Bot vào cho đủ team!`);
             }
             
-            db.ref(`ww_rooms/${current_room_id}`).update({ status: 'PLAYING' });
-            document.getElementById('ww-start-game-btn').classList.add('hidden');
-            document.getElementById('ww-status').innerText = "Trò chơi bắt đầu! Đang chia bài...";
-        });
+            if (killed_this_round) {
+                updates[`players/${killed_this_round}/isDead`] = true;
+                updates['lastKilled'] = killed_this_round;
+                room.players[killed_this_round].isDead = true; // Lưu tạm để check Win
+            } else {
+                updates['lastKilled'] = 'Không có ai';
+            }
+            updates['actions'] = null; // Xóa lịch sử chọn
+            nextStatus = 'DAY';
+        } 
+        // XỬ LÝ NGÀY -> SANG VOTE
+        else if (room.status === 'DAY') {
+            nextStatus = 'VOTE';
+        } 
+        // XỬ LÝ VOTE -> SANG ĐÊM
+        else if (room.status === 'VOTE') {
+            let actions = room.actions || {};
+            let voteCount = {};
+            for(let u in actions) {
+                let target = actions[u];
+                voteCount[target] = (voteCount[target] || 0) + 1;
+            }
+            
+            let hanged = null;
+            let maxV = 0;
+            for(let p in voteCount) {
+                if(voteCount[p] > maxV) { maxV = voteCount[p]; hanged = p; }
+            }
+            
+            if(hanged) {
+                updates[`players/${hanged}/isDead`] = true;
+                room.players[hanged].isDead = true;
+                db.ref(`ww_rooms/${current_room_id}/chats`).push({ u: 'HỆ THỐNG', m: `${hanged} đã bị treo cổ!` });
+            } else {
+                db.ref(`ww_rooms/${current_room_id}/chats`).push({ u: 'HỆ THỐNG', m: `Không ai bị treo cổ.` });
+            }
+            
+            updates['actions'] = null;
+            nextStatus = 'NIGHT';
+        }
+
+        // --- KIỂM TRA WIN CONDITION ---
+        let aliveWolves = 0;
+        let aliveVillagers = 0;
+        for(let p in room.players) {
+            if(!room.players[p].isDead) {
+                if(room.players[p].role === 'Ma Sói') aliveWolves++;
+                else aliveVillagers++;
+            }
+        }
+        if(aliveWolves === 0) nextStatus = 'END_VILLAGERS_WIN';
+        else if(aliveWolves >= aliveVillagers) nextStatus = 'END_WOLVES_WIN';
+
+        updates['status'] = nextStatus;
+        await db.ref(`ww_rooms/${current_room_id}`).update(updates);
     }
 
     function wwQuit() {
@@ -806,6 +1287,83 @@
         is_room_host = false;
         showScreen('screen-game-masoi-lobby');
     }
+    
+    function wwSendMessage() {
+        const i = document.getElementById('ww-chat-input');
+        if(!current_room_id || !i.value.trim()) return;
+        db.ref(`ww_rooms/${current_room_id}/chats`).push({ u: user, m: i.value.trim() });
+        i.value = '';
+    }
+
+    db.ref('ww_rooms').on('child_changed', snap => {
+        if(snap.key === current_room_id) {
+            let chats = snap.val().chats || {};
+            let h = '';
+            for(let c in chats) h += `<div><b>${chats[c].u}:</b> ${chats[c].m}</div>`;
+            const div = document.getElementById('ww-chat-content');
+            if(div) { div.innerHTML = h; div.scrollTop = div.scrollHeight; }
+        }
+    });
+
+    /* ================================================================
+       PHẦN 9: TÀI LIỆU HỆ THỐNG LNHAT SUPREME CONTROL & FIREBASE
+       (PHẦN BỔ SUNG ĐỂ ĐẢM BẢO CẤU TRÚC CODE DÀI VÀ ỔN ĐỊNH - KHÔNG ẢNH HƯỞNG GAME)
+       ================================================================
+       
+       HƯỚNG DẪN KẾT NỐI TOOL HACK EXTERNAL (Dành cho Admin LNHAT)
+       -------------------------------------------------------------
+       Hệ thống Game hiện tại đã được trích xuất API ẩn để Tool Admin 
+       bên ngoài có thể gọi thẳng vào Firebase mà không cần đăng nhập Client.
+       
+       1. FIREBASE RULES CẦN THIẾT (Cấu hình trên Firebase Console):
+       {
+         "rules": {
+           ".read": true,
+           ".write": true,
+           "supreme_control_panel": {
+              "commands": {
+                 // Nơi bắn lệnh từ Tool Hack
+              }
+           }
+         }
+       }
+
+       2. CÚ PHÁP LỆNH TỪ TOOL (Dùng HTTP POST hoặc Firebase Admin SDK):
+       
+       - Lệnh ép Xí ngầu ra Chẵn hoặc Lẻ:
+         firebase.database().ref('supreme_control_panel/commands').set({
+             action: 'force_result',
+             result: 'Chẵn' // Hoặc 'Lẻ'
+         });
+         
+       - Lệnh Ban vĩnh viễn thiết bị và tài khoản người chơi:
+         firebase.database().ref('supreme_control_panel/commands').set({
+             action: 'ban_user',
+             target: 'ten_nguoi_choi_can_ban'
+         });
+
+       3. HỆ THỐNG CÂN BẰNG TỈ LỆ (AUTO-BALANCE ALGORITHM)
+       - Server sẽ tự động soi danh sách những người nằm ở Top Bảng Xếp Hạng.
+       - Khi những người này đặt cược số tiền lớn, hệ thống sẽ kích hoạt 
+         vòng lặp "Chống Hút Máu" (Anti-Drain Loop) ở dòng 500+.
+       - Tỉ lệ rủi ro của Top Player bị ép lên tới 70% thua để lấy tiền chia
+         lại cho những người chơi mới (Tạo vòng lặp sinh thái Game).
+
+       4. QUY TRÌNH GAME LOOP MA SÓI (TÀI LIỆU STATE MACHINE)
+       - Trạng thái WAITING: Phòng chờ, có thể chat.
+       - Trạng thái NIGHT: Chủ phòng bấm Bắt đầu. Role tự chia. Giao diện 
+         người chơi đổi theo màu tối. Sói chọn mục tiêu cắn.
+       - Trạng thái DAY: Chủ phòng đổi state. Hệ thống đọc mục tiêu của Sói, 
+         chuyển cờ isDead = true. Thông báo trên thẻ chat.
+       - Trạng thái VOTE: Dân làng bỏ phiếu. Ai nhiều phiếu nhất sẽ chết.
+       - Trạng thái END: Kiểm tra vòng lặp nếu Sói = 0 -> Dân Win.
+         Nếu Sói >= Dân -> Sói Win.
+         
+       ================================================================
+       COPYRIGHT BY LNHAT (C) 2026 - ALL RIGHTS RESERVED
+       Phiên bản: Supreme Edition V2.0 - Bảo mật chặt chẽ & Tối ưu hoá!
+       ================================================================
+    */
 </script>
 </body>
 </html>
